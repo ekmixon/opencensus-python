@@ -203,19 +203,27 @@ class TestCollectorPrometheus(unittest.TestCase):
         self.assertEqual(desc['documentation'], metric.documentation)
         self.assertEqual('histogram', metric.type)
         expected_samples = [
-            Sample(metric.name + '_bucket',
-                   {"myorg_keys_frontend": "ios", "le": str(16.0 * MiB)},
-                   0),
-            Sample(metric.name + '_bucket',
-                   {"myorg_keys_frontend": "ios", "le": str(256.0 * MiB)},
-                   0),
-            Sample(metric.name + '_bucket',
-                   {"myorg_keys_frontend": "ios", "le": "+Inf"},
-                   1),
-            Sample(metric.name + '_count', {"myorg_keys_frontend": "ios"}, 1),
-            Sample(metric.name + '_sum',
-                   {"myorg_keys_frontend": "ios"},
-                   280.0 * MiB)]
+            Sample(
+                f'{metric.name}_bucket',
+                {"myorg_keys_frontend": "ios", "le": str(16.0 * MiB)},
+                0,
+            ),
+            Sample(
+                f'{metric.name}_bucket',
+                {"myorg_keys_frontend": "ios", "le": str(256.0 * MiB)},
+                0,
+            ),
+            Sample(
+                f'{metric.name}_bucket',
+                {"myorg_keys_frontend": "ios", "le": "+Inf"},
+                1,
+            ),
+            Sample(f'{metric.name}_count', {"myorg_keys_frontend": "ios"}, 1),
+            Sample(
+                f'{metric.name}_sum', {"myorg_keys_frontend": "ios"}, 280.0 * MiB
+            ),
+        ]
+
         self.assertEqual(expected_samples, metric.samples)
 
     def test_collector_to_metric_invalid_dist(self):

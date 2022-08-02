@@ -28,14 +28,14 @@ def println(msg):
 
 
 def work(name):
-    println('Entering worker[{}]: {}'.format(name, RuntimeContext))
+    println(f'Entering worker[{name}]: {RuntimeContext}')
     RuntimeContext.operation_id = name
     time.sleep(0.01)
-    println('Exiting worker[{}]: {}'.format(name, RuntimeContext))
+    println(f'Exiting worker[{name}]: {RuntimeContext}')
 
 
 if __name__ == "__main__":
-    println('Main thread: {}'.format(RuntimeContext))
+    println(f'Main thread: {RuntimeContext}')
     RuntimeContext.operation_id = 'main'
     pool = ThreadPool(2)  # create a thread pool with 2 threads
     pool.map(RuntimeContext.with_current_context(work), [
@@ -47,4 +47,4 @@ if __name__ == "__main__":
     ])
     pool.close()
     pool.join()
-    println('Main thread: {}'.format(RuntimeContext))
+    println(f'Main thread: {RuntimeContext}')

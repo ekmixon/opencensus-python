@@ -158,9 +158,6 @@ class TestOpenCensusServerInterceptor(unittest.TestCase):
         mock_tracer.return_value = mock_tracer
 
         it = grpc_utils.wrap_iter_with_end_span(iter(['test']))
-        for i in it:
-            pass
-
         self.assertEqual(mock_tracer.end_span.call_count, 1)
 
     def test__wrap_rpc_behavior_none(self):

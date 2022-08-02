@@ -39,9 +39,4 @@ class Point(object):
         return self._timestamp
 
     def __repr__(self):
-        return ("{}(value={}, timestamp={})"
-                .format(
-                    type(self).__name__,
-                    self.value,
-                    self.timestamp
-                ))
+        return f"{type(self).__name__}(value={self.value}, timestamp={self.timestamp})"

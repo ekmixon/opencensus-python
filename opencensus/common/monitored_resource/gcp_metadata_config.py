@@ -86,10 +86,7 @@ class GcpMetadataConfig(object):
 
     def get_gce_metadata(self):
         """for GCP GCE instance"""
-        if self.is_running_on_gcp():
-            return _GCP_METADATA_MAP
-
-        return dict()
+        return _GCP_METADATA_MAP if self.is_running_on_gcp() else {}
 
     @staticmethod
     def get_attribute(attribute_uri):

@@ -195,13 +195,14 @@ class TestTransportMixin(unittest.TestCase):
                 post.return_value = MockResponse(200, 'unknown')
                 mixin._transmit_from_storage()
                 post.assert_called_with(
-                    url=url + '/v2.1/track',
+                    url=f'{url}/v2.1/track',
                     data=data,
                     headers=headers,
                     timeout=10.0,
                     proxies={},
                     allow_redirects=False,
                 )
+
             credential.get_token.assert_called_with(_MONITOR_OAUTH_SCOPE)
             self.assertIsNone(mixin.storage.get())
             self.assertEqual(len(os.listdir(mixin.storage.path)), 0)

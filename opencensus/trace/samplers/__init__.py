@@ -89,6 +89,4 @@ def get_lower_long_from_trace_id(trace_id):
     :returns: Lower 8 bytes of trace ID
     """
     lower_bytes = trace_id[16:]
-    lower_long = int(lower_bytes, 16)
-
-    return lower_long
+    return int(lower_bytes, 16)

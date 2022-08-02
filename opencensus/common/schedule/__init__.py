@@ -66,7 +66,7 @@ class QueueEvent(object):
         self.event = threading.Event()
 
     def __repr__(self):
-        return ('{}({})'.format(type(self).__name__, self.name))
+        return f'{type(self).__name__}({self.name})'
 
     def set(self):
         return self.event.set()
@@ -117,7 +117,7 @@ class Queue(object):
             return 0
         start_time = time.time()
         wait_time = timeout
-        event = QueueEvent('SYNC(timeout={})'.format(wait_time))
+        event = QueueEvent(f'SYNC(timeout={wait_time})')
         try:
             self._queue.put(event, block=True, timeout=wait_time)
         except queue.Full:

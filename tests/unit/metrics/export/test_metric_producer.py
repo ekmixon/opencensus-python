@@ -29,7 +29,7 @@ class TestMetricProducerManager(unittest.TestCase):
 
         mock_mp = Mock()
         mpm2 = metric_producer.MetricProducerManager([mock_mp])
-        self.assertEqual(mpm2.metric_producers, set([mock_mp]))
+        self.assertEqual(mpm2.metric_producers, {mock_mp})
 
     def test_add_remove(self):
         mpm = metric_producer.MetricProducerManager()
@@ -39,15 +39,15 @@ class TestMetricProducerManager(unittest.TestCase):
             mpm.add(None)
         mock_mp = Mock()
         mpm.add(mock_mp)
-        self.assertEqual(mpm.metric_producers, set([mock_mp]))
+        self.assertEqual(mpm.metric_producers, {mock_mp})
         mpm.add(mock_mp)
-        self.assertEqual(mpm.metric_producers, set([mock_mp]))
+        self.assertEqual(mpm.metric_producers, {mock_mp})
 
         with self.assertRaises(ValueError):
             mpm.remove(None)
         another_mock_mp = Mock()
         mpm.remove(another_mock_mp)
-        self.assertEqual(mpm.metric_producers, set([mock_mp]))
+        self.assertEqual(mpm.metric_producers, {mock_mp})
         mpm.remove(mock_mp)
         self.assertEqual(mpm.metric_producers, set())
 

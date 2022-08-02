@@ -36,11 +36,10 @@ def get_truncatable_str(str_to_convert):
     truncated, truncated_byte_count = check_str_length(
         str_to_convert, MAX_LENGTH)
 
-    result = {
+    return {
         'value': truncated,
         'truncated_byte_count': truncated_byte_count,
     }
-    return result
 
 
 def check_str_length(str_to_check, limit=MAX_LENGTH):
@@ -83,8 +82,7 @@ def timestamp_to_microseconds(timestamp):
     """
     timestamp_str = datetime.datetime.strptime(timestamp, ISO_DATETIME_REGEX)
     epoch_time_secs = calendar.timegm(timestamp_str.timetuple())
-    epoch_time_mus = epoch_time_secs * 1e6 + timestamp_str.microsecond
-    return epoch_time_mus
+    return epoch_time_secs * 1e6 + timestamp_str.microsecond
 
 
 def iuniq(ible):
@@ -111,8 +109,7 @@ def window(ible, length):
         raise ValueError
     ible = iter(ible)
     while True:
-        elts = [xx for ii, xx in zip(range(length), ible)]
-        if elts:
+        if elts := [xx for ii, xx in zip(range(length), ible)]:
             yield elts
         else:
             break
@@ -126,6 +123,4 @@ def get_weakref(func):
     """
     if func is None:
         raise ValueError
-    if not hasattr(func, '__self__'):
-        return weakref.ref(func)
-    return WeakMethod(func)
+    return WeakMethod(func) if hasattr(func, '__self__') else weakref.ref(func)

@@ -55,8 +55,7 @@ def create_metric():
         label_keys=[label_key.LabelKey('key', 'description')]
     )
 
-    mm = metric.Metric(descriptor=desc, time_series=ts)
-    return mm
+    return metric.Metric(descriptor=desc, time_series=ts)
 
 
 class TestAzureMetricsExporter(unittest.TestCase):
@@ -86,8 +85,8 @@ class TestAzureMetricsExporter(unittest.TestCase):
         exporter = MetricsExporter(
             instrumentation_key='12345678-1234-5678-abcd-12345678abcd')
         requests_mock.return_value.text = '{"itemsReceived":1,'\
-                                          '"itemsAccepted":1,'\
-                                          '"errors":[]}'
+                                              '"itemsAccepted":1,'\
+                                              '"errors":[]}'
         requests_mock.return_value.status_code = 200
         exporter.export_metrics([metric])
 
@@ -120,8 +119,8 @@ class TestAzureMetricsExporter(unittest.TestCase):
             max_batch_size=1)
         requests_mock.return_value.status_code = 200
         requests_mock.return_value.text = '{"itemsReceived":1,'\
-                                          '"itemsAccepted":1,'\
-                                          '"errors":[]}'
+                                              '"itemsAccepted":1,'\
+                                              '"errors":[]}'
         exporter.export_metrics([metric])
 
         self.assertEqual(len(requests_mock.call_args_list), 1)

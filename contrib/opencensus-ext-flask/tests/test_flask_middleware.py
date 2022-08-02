@@ -135,7 +135,7 @@ class TestFlaskMiddleware(unittest.TestCase):
         flask_trace_header = 'traceparent'
         trace_id = '2dd43a1d6b2549c6bc2a1a54c2fc0b05'
         span_id = '6e0c63257de34c92'
-        flask_trace_id = '00-{}-{}-00'.format(trace_id, span_id)
+        flask_trace_id = f'00-{trace_id}-{span_id}-00'
 
         app = self.create_app()
         flask_middleware.FlaskMiddleware(app=app,
@@ -169,7 +169,7 @@ class TestFlaskMiddleware(unittest.TestCase):
         flask_trace_header = 'traceparent'
         trace_id = '2dd43a1d6b2549c6bc2a1a54c2fc0b05'
         span_id = '6e0c63257de34c92'
-        flask_trace_id = '00-{}-{}-00'.format(trace_id, span_id)
+        flask_trace_id = f'00-{trace_id}-{span_id}-00'
 
         app = self.create_app()
         # Use the AlwaysOnSampler here to prove that the excludelist takes
@@ -199,7 +199,7 @@ class TestFlaskMiddleware(unittest.TestCase):
         flask_trace_header = 'traceparent'
         trace_id = "你好"
         span_id = '6e0c63257de34c92'
-        flask_trace_id = '00-{}-{}-00'.format(trace_id, span_id)
+        flask_trace_id = f'00-{trace_id}-{span_id}-00'
 
         app = self.create_app()
         flask_middleware.FlaskMiddleware(app=app,
@@ -256,7 +256,7 @@ class TestFlaskMiddleware(unittest.TestCase):
         flask_trace_header = 'traceparent'
         trace_id = '2dd43a1d6b2549c6bc2a1a54c2fc0b05'
         span_id = '6e0c63257de34c92'
-        flask_trace_id = '00-{}-{}-00'.format(trace_id, span_id)
+        flask_trace_id = f'00-{trace_id}-{span_id}-00'
         sampler = samplers.AlwaysOffSampler()
 
         app = self.create_app()
@@ -272,7 +272,7 @@ class TestFlaskMiddleware(unittest.TestCase):
         flask_trace_header = 'traceparent'
         trace_id = '2dd43a1d6b2549c6bc2a1a54c2fc0b05'
         span_id = '6e0c63257de34c92'
-        flask_trace_id = '00-{}-{}-00'.format(trace_id, span_id)
+        flask_trace_id = f'00-{trace_id}-{span_id}-00'
 
         app = self.create_app()
         flask_middleware.FlaskMiddleware(
@@ -311,7 +311,7 @@ class TestFlaskMiddleware(unittest.TestCase):
         flask_trace_header = 'traceparent'
         trace_id = '2dd43a1d6b2549c6bc2a1a54c2fc0b05'
         span_id = '6e0c63257de34c92'
-        flask_trace_id = '00-{}-{}-00'.format(trace_id, span_id)
+        flask_trace_id = f'00-{trace_id}-{span_id}-00'
 
         app = self.create_app()
         flask_middleware.FlaskMiddleware(
@@ -353,7 +353,7 @@ class TestFlaskMiddleware(unittest.TestCase):
         flask_trace_header = 'traceparent'
         trace_id = '2dd43a1d6b2549c6bc2a1a54c2fc0b05'
         span_id = '6e0c63257de34c92'
-        flask_trace_id = '00-{}-{}-00'.format(trace_id, span_id)
+        flask_trace_id = f'00-{trace_id}-{span_id}-00'
 
         app = self.create_app()
         flask_middleware.FlaskMiddleware(app=app)

@@ -159,9 +159,9 @@ class TestResourceModule(unittest.TestCase):
         self.assertNotIn(u'猫', ve.exception.args[0])
 
         with self.assertRaises(ValueError):
-            resource_module.check_ascii_256('abc' + chr(31))
+            resource_module.check_ascii_256(f'abc{chr(31)}')
         with self.assertRaises(ValueError):
-            resource_module.check_ascii_256(u'abc' + chr(31))
+            resource_module.check_ascii_256(f'abc{chr(31)}')
 
     def test_get_from_env(self):
         with mock.patch.dict('os.environ', {

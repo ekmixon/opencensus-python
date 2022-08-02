@@ -92,9 +92,7 @@ class OpenCensusTweenFactory(object):
             span = tracer.start_span()
 
             # Set the span name as the name of the current module name
-            span.name = '[{}]{}'.format(
-                request.method,
-                request.path)
+            span.name = f'[{request.method}]{request.path}'
 
             span.span_kind = span_module.SpanKind.SERVER
             tracer.add_attribute_to_current_span(

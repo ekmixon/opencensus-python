@@ -56,9 +56,7 @@ class WeakMethod(weakref.ref):  # pragma: NO COVER
     def __call__(self):
         obj = super(WeakMethod, self).__call__()
         func = self._func_ref()
-        if obj is None or func is None:
-            return None
-        return self._meth_type(func, obj)
+        return None if obj is None or func is None else self._meth_type(func, obj)
 
     def __eq__(self, other):
         if isinstance(other, WeakMethod):

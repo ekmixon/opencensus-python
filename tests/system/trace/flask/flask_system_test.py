@@ -32,7 +32,7 @@ RETRY_MAX_ATTEMPT = 10  # Retry 10 times
 
 def wait_app_to_start():
     """Wait the application to start running."""
-    cmd = 'wget --retry-connrefused --tries=5 {}'.format(BASE_URL)
+    cmd = f'wget --retry-connrefused --tries=5 {BASE_URL}'
     subprocess.check_call(cmd, shell=True)
 
 
@@ -42,7 +42,7 @@ def generate_header():
     span_id = uuid.uuid4().hex[:16]
     trace_option = 1
 
-    header = '{}/{};o={}'.format(trace_id, int(span_id, 16), trace_option)
+    header = f'{trace_id}/{int(span_id, 16)};o={trace_option}'
 
     return trace_id, span_id, header
 
@@ -50,9 +50,9 @@ def generate_header():
 def run_application():
     """Start running the flask application."""
     cmd = 'python tests/system/trace/flask/main.py'
-    process = subprocess.Popen(
-        cmd, stdout=subprocess.PIPE, shell=True, preexec_fn=os.setsid)
-    return process
+    return subprocess.Popen(
+        cmd, stdout=subprocess.PIPE, shell=True, preexec_fn=os.setsid
+    )
 
 
 class TestFlaskTrace(unittest.TestCase):
@@ -71,9 +71,9 @@ class TestFlaskTrace(unittest.TestCase):
         self.process = run_application()
 
         self.headers_trace = {
-            'X-Cloud-Trace-Context':
-            '{}/{};o={}'.format(self.trace_id, int(self.span_id, 16), 1)
+            'X-Cloud-Trace-Context': f'{self.trace_id}/{int(self.span_id, 16)};o=1'
         }
+
 
         # Wait the application to start
         wait_app_to_start()

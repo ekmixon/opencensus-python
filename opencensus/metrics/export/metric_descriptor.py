@@ -20,7 +20,7 @@ from opencensus.metrics.export import value
 class _MetricDescriptorTypeMeta(type):
     """Helper for `x in MetricDescriptorType`."""
 
-    def __contains__(cls, item):
+    def __contains__(self, item):
         return item in {
             MetricDescriptorType.GAUGE_INT64,
             MetricDescriptorType.GAUGE_DOUBLE,
@@ -144,14 +144,7 @@ class MetricDescriptor(object):
 
     def __repr__(self):
         type_name = MetricDescriptorType.to_type_class(self.type).__name__
-        return ('{}(name="{}", description="{}", unit={}, type={})'
-                .format(
-                    type(self).__name__,
-                    self.name,
-                    self.description,
-                    self.unit,
-                    type_name,
-                ))
+        return f'{type(self).__name__}(name="{self.name}", description="{self.description}", unit={self.unit}, type={type_name})'
 
     @property
     def name(self):

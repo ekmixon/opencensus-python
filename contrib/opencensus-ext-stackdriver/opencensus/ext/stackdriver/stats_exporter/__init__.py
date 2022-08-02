@@ -205,7 +205,7 @@ class StackdriverStatsExporter(object):
             sd_dist_val = sd_point.value.distribution_value
             sd_dist_val.count = point.value.count
             sd_dist_val.sum_of_squared_deviation =\
-                point.value.sum_of_squared_deviation
+                    point.value.sum_of_squared_deviation
             sd_dist_val.mean = point.value.sum / sd_dist_val.count
 
             assert sd_dist_val.bucket_options.explicit_buckets.bounds == []
@@ -236,10 +236,8 @@ class StackdriverStatsExporter(object):
               metric_descriptor.MetricDescriptorType.GAUGE_DOUBLE):
             sd_point.value.double_value = float(point.value.value)
 
-        # TODO: handle SUMMARY metrics, #567
         else:  # pragma: NO COVER
-            raise TypeError("Unsupported metric type: {}"
-                            .format(metric.descriptor.type))
+            raise TypeError(f"Unsupported metric type: {metric.descriptor.type}")
 
         end = point.timestamp
         if ts.start_timestamp is None:
@@ -271,13 +269,9 @@ class StackdriverStatsExporter(object):
         try:
             metric_kind, value_type = OC_MD_TO_SD_TYPE[oc_md.type]
         except KeyError:
-            raise TypeError("Unsupported metric type: {}".format(oc_md.type))
+            raise TypeError(f"Unsupported metric type: {oc_md.type}")
 
-        if self.options.metric_prefix:
-            display_name_prefix = self.options.metric_prefix
-        else:
-            display_name_prefix = DEFAULT_DISPLAY_NAME_PREFIX
-
+        display_name_prefix = self.options.metric_prefix or DEFAULT_DISPLAY_NAME_PREFIX
         desc_labels = new_label_descriptors(
             self.options.default_monitoring_labels, oc_md.label_keys)
 
@@ -288,10 +282,11 @@ class StackdriverStatsExporter(object):
         descriptor.value_type = value_type
         descriptor.description = oc_md.description
         descriptor.unit = oc_md.unit
-        descriptor.name = ("projects/{}/metricDescriptors/{}"
-                           .format(self.options.project_id, metric_type))
-        descriptor.display_name = ("{}/{}"
-                                   .format(display_name_prefix, oc_md.name))
+        descriptor.name = (
+            f"projects/{self.options.project_id}/metricDescriptors/{metric_type}"
+        )
+
+        descriptor.display_name = f"{display_name_prefix}/{oc_md.name}"
 
         return descriptor
 
@@ -376,7 +371,7 @@ def set_monitored_resource(series, option_resource_type):
 
 def get_user_agent_slug():
     """Get the UA fragment to identify this library version."""
-    return "opencensus-python/{}".format(__version__)
+    return f"opencensus-python/{__version__}"
 
 
 def new_stats_exporter(options=None, interval=None):
@@ -404,7 +399,7 @@ def new_stats_exporter(options=None, interval=None):
     if options is None:
         _, project_id = google.auth.default()
         options = Options(project_id=project_id)
-    if str(options.project_id).strip() == "":
+    if not str(options.project_id).strip():
         raise ValueError(ERROR_BLANK_PROJECT_ID)
 
     ci = client_info.ClientInfo(client_library_version=get_user_agent_slug())
@@ -422,7 +417,7 @@ def get_task_value():
     hostname = platform.uname()[1]
     if not hostname:
         hostname = "localhost"
-    return "py-%s@%s" % (os.getpid(), hostname)
+    return f"py-{os.getpid()}@{hostname}"
 
 
 def namespaced_view_name(view_name, metric_prefix):
@@ -438,8 +433,7 @@ def new_label_descriptors(defaults, keys):
     """
     label_descriptors = []
     for lk in itertools.chain.from_iterable((defaults.keys(), keys)):
-        label = {}
-        label["key"] = sanitize_label(lk.key)
+        label = {"key": sanitize_label(lk.key)}
         label["description"] = lk.description
         label_descriptors.append(label)
 
@@ -457,7 +451,7 @@ def sanitize_label(text):
         return text
     text = re.sub('\\W+', '_', text)
     if text[0] in string.digits:
-        text = "key_" + text
+        text = f"key_{text}"
     elif text[0] == '_':
-        text = "key" + text
+        text = f"key{text}"
     return text[:100]

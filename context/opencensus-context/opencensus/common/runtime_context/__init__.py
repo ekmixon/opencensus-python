@@ -54,22 +54,20 @@ class _RuntimeContext(object):
     def snapshot(self):
         """Return a dictionary of current slots by reference."""
 
-        return dict((n, self._slots[n].get()) for n in self._slots.keys())
+        return {n: self._slots[n].get() for n in self._slots.keys()}
 
     def __repr__(self):
-        return ('{}({})'.format(type(self).__name__, self.snapshot()))
+        return f'{type(self).__name__}({self.snapshot()})'
 
     def __getattr__(self, name):
         if name not in self._slots:
-            raise AttributeError('{} is not a registered context slot'
-                                 .format(name))
+            raise AttributeError(f'{name} is not a registered context slot')
         slot = self._slots[name]
         return slot.get()
 
     def __setattr__(self, name, value):
         if name not in self._slots:
-            raise AttributeError('{} is not a registered context slot'
-                                 .format(name))
+            raise AttributeError(f'{name} is not a registered context slot')
         slot = self._slots[name]
         slot.set(value)
 
@@ -125,7 +123,7 @@ class _ThreadLocalRuntimeContext(_RuntimeContext):
     def register_slot(cls, name, default=None):
         with cls._lock:
             if name in cls._slots:
-                raise ValueError('slot {} already registered'.format(name))
+                raise ValueError(f'slot {name} already registered')
             slot = cls.Slot(name, default)
             cls._slots[name] = slot
             return slot
@@ -166,7 +164,7 @@ class _AsyncRuntimeContext(_RuntimeContext):
     def register_slot(cls, name, default=None):
         with cls._lock:
             if name in cls._slots:
-                raise ValueError('slot {} already registered'.format(name))
+                raise ValueError(f'slot {name} already registered')
             slot = cls.Slot(name, default)
             cls._slots[name] = slot
             return slot

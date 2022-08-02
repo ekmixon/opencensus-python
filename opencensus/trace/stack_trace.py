@@ -85,9 +85,7 @@ class StackFrame(object):
 
     def format_stack_frame_json(self):
         """Convert StackFrame object to json format."""
-        stack_frame_json = {}
-        stack_frame_json['function_name'] = get_truncatable_str(
-            self.func_name)
+        stack_frame_json = {'function_name': get_truncatable_str(self.func_name)}
         stack_frame_json['original_function_name'] = get_truncatable_str(
             self.original_func_name)
         stack_frame_json['file_name'] = get_truncatable_str(self.file_name)

@@ -47,8 +47,7 @@ def wrap_iter_with_message_events(request_or_response_iter, span,
 
 def wrap_iter_with_end_span(response_iter):
     """Wraps an iterator to end the current span on completion"""
-    for response in response_iter:
-        yield response
+    yield from response_iter
     execution_context.get_opencensus_tracer().end_span()
 
 

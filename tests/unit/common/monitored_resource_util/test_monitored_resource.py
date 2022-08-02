@@ -28,7 +28,7 @@ else:
 
 @contextmanager
 def mock_mr_method(method, use):
-    with mock.patch('{}.{}'.format(monitored_resource.__name__, method)) as mm:
+    with mock.patch(f'{monitored_resource.__name__}.{method}') as mm:
         mm.return_value = use
         yield
 

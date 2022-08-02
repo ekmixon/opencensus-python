@@ -70,7 +70,7 @@ class TestBasicStats(unittest.TestCase):
         suffix = str(os.getgid())
 
         cli = monitoring_v3.MetricServiceClient()
-        for md in cli.list_metric_descriptors('projects/{}'.format(PROJECT)):
+        for md in cli.list_metric_descriptors(f'projects/{PROJECT}'):
             if "OpenCensus" in md.name and suffix in md.name:
                 try:
                     cli.delete_metric_descriptor(md.name)
@@ -81,11 +81,11 @@ class TestBasicStats(unittest.TestCase):
         # We are using suffix in order to prevent cached objects
         suffix = str(os.getgid())
 
-        tag_key = "SampleKeySyncTest%s" % suffix
-        measure_name = "SampleMeasureNameSyncTest%s" % suffix
-        measure_description = "SampleDescriptionSyncTest%s" % suffix
-        view_name = "SampleViewNameSyncTest%s" % suffix
-        view_description = "SampleViewDescriptionSyncTest%s" % suffix
+        tag_key = f"SampleKeySyncTest{suffix}"
+        measure_name = f"SampleMeasureNameSyncTest{suffix}"
+        measure_description = f"SampleDescriptionSyncTest{suffix}"
+        view_name = f"SampleViewNameSyncTest{suffix}"
+        view_description = f"SampleViewDescriptionSyncTest{suffix}"
 
         FRONTEND_KEY = tag_key_module.TagKey(tag_key)
         VIDEO_SIZE_MEASURE = measure_module.MeasureInt(
@@ -133,18 +133,18 @@ class TestBasicStats(unittest.TestCase):
         # We are using suffix in order to prevent cached objects
         suffix = str(os.getpid())
 
-        tag_key = "SampleKeyAsyncTest%s" % suffix
-        measure_name = "SampleMeasureNameAsyncTest%s" % suffix
-        measure_description = "SampleDescriptionAsyncTest%s" % suffix
-        view_name = "SampleViewNameAsyncTest%s" % suffix
-        view_description = "SampleViewDescriptionAsyncTest%s" % suffix
+        tag_key = f"SampleKeyAsyncTest{suffix}"
+        measure_name = f"SampleMeasureNameAsyncTest{suffix}"
+        measure_description = f"SampleDescriptionAsyncTest{suffix}"
+        view_name = f"SampleViewNameAsyncTest{suffix}"
+        view_description = f"SampleViewDescriptionAsyncTest{suffix}"
 
         FRONTEND_KEY_ASYNC = tag_key_module.TagKey(tag_key)
         VIDEO_SIZE_MEASURE_ASYNC = measure_module.MeasureInt(
             measure_name, measure_description, "By")
         VIDEO_SIZE_VIEW_NAME_ASYNC = view_name
         VIDEO_SIZE_DISTRIBUTION_ASYNC =\
-            aggregation_module.DistributionAggregation(
+                aggregation_module.DistributionAggregation(
                 [0.0, 16.0 * MiB, 256.0 * MiB]
             )
         VIDEO_SIZE_VIEW_ASYNC = view_module.View(

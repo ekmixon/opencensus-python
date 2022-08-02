@@ -63,6 +63,4 @@ def get_instance():
             (aws_identity_doc_utils.AwsIdentityDocumentUtils()
              .get_aws_metadata())))
 
-    if not resources:
-        return None
-    return resource.merge_resources(resources)
+    return resource.merge_resources(resources) if resources else None

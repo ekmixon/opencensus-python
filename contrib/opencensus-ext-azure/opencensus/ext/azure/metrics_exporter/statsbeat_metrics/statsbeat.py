@@ -67,24 +67,27 @@ class _StatsbeatFeature:
 
 
 def _get_stats_connection_string():
-    cs_env = os.environ.get("APPLICATION_INSIGHTS_STATS_CONNECTION_STRING")
-    if cs_env:
+    if cs_env := os.environ.get(
+        "APPLICATION_INSIGHTS_STATS_CONNECTION_STRING"
+    ):
         return cs_env
     else:
         return _DEFAULT_STATS_CONNECTION_STRING
 
 
 def _get_stats_short_export_interval():
-    ei_env = os.environ.get("APPLICATION_INSIGHTS_STATS_SHORT_EXPORT_INTERVAL")
-    if ei_env:
+    if ei_env := os.environ.get(
+        "APPLICATION_INSIGHTS_STATS_SHORT_EXPORT_INTERVAL"
+    ):
         return int(ei_env)
     else:
         return _DEFAULT_STATS_SHORT_EXPORT_INTERVAL
 
 
 def _get_stats_long_export_interval():
-    ei_env = os.environ.get("APPLICATION_INSIGHTS_STATS_LONG_EXPORT_INTERVAL")
-    if ei_env:
+    if ei_env := os.environ.get(
+        "APPLICATION_INSIGHTS_STATS_LONG_EXPORT_INTERVAL"
+    ):
         return int(ei_env)
     else:
         return _DEFAULT_STATS_LONG_EXPORT_INTERVAL
@@ -97,9 +100,10 @@ _STATS_LONG_INTERVAL_THRESHOLD = _STATS_LONG_EXPORT_INTERVAL / _STATS_SHORT_EXPO
 
 
 def _get_common_properties():
-    properties = []
-    properties.append(
-        LabelKey("rp", 'name of the rp, e.g. appsvc, vm, function, aks, etc.'))
+    properties = [
+        LabelKey("rp", 'name of the rp, e.g. appsvc, vm, function, aks, etc.')
+    ]
+
     properties.append(LabelKey("attach", 'codeless or sdk'))
     properties.append(LabelKey("cikey", 'customer ikey'))
     properties.append(LabelKey("runtimeVersion", 'Python version'))
@@ -265,16 +269,13 @@ class _StatsbeatMetrics:
     def get_initial_metrics(self):
         stats_metrics = []
         if self._attach_metric:
-            attach_metric = self._get_attach_metric()
-            if attach_metric:
+            if attach_metric := self._get_attach_metric():
                 stats_metrics.append(attach_metric)
         if self._feature_metric:
-            feature_metric = self._get_feature_metric()
-            if feature_metric:
+            if feature_metric := self._get_feature_metric():
                 stats_metrics.append(feature_metric)
         if self._instrumentation_metric:
-            instr_metric = self._get_instrumentation_metric()
-            if instr_metric:
+            if instr_metric := self._get_instrumentation_metric():
                 stats_metrics.append(instr_metric)
         return stats_metrics
 
@@ -334,10 +335,8 @@ class _StatsbeatMetrics:
         if os.environ.get("WEBSITE_SITE_NAME") is not None:
             # Web apps
             rp = _RP_NAMES[0]
-            rpId = '{}/{}'.format(
-                        os.environ.get("WEBSITE_SITE_NAME"),
-                        os.environ.get("WEBSITE_HOME_STAMPNAME", '')
-            )
+            rpId = f"""{os.environ.get("WEBSITE_SITE_NAME")}/{os.environ.get("WEBSITE_HOME_STAMPNAME", '')}"""
+
         elif os.environ.get("FUNCTIONS_WORKER_RUNTIME") is not None:
             # Function apps
             rp = _RP_NAMES[1]
@@ -345,9 +344,8 @@ class _StatsbeatMetrics:
         elif self._vm_retry and self._get_azure_compute_metadata():
             # VM
             rp = _RP_NAMES[2]
-            rpId = '{}/{}'.format(
-                        self._vm_data.get("vmId", ''),
-                        self._vm_data.get("subscriptionId", ''))
+            rpId = f"""{self._vm_data.get("vmId", '')}/{self._vm_data.get("subscriptionId", '')}"""
+
             self._os_type = self._vm_data.get("osType", '')
         else:
             # Not in any rp or VM metadata failed
@@ -361,8 +359,7 @@ class _StatsbeatMetrics:
         return self._attach_metric.get_metric(datetime.datetime.utcnow())
 
     def _get_common_properties(self):
-        properties = []
-        properties.append(LabelValue(self._rp))  # rp
+        properties = [LabelValue(self._rp)]
         properties.append(LabelValue("sdk"))  # attach type
         properties.append(LabelValue(self._instrumentation_key))  # cikey
         # runTimeVersion

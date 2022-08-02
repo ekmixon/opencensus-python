@@ -26,13 +26,13 @@ def trace_integrations(integrations, tracer=None):
     integrated = []
 
     for item in integrations:
-        module_name = 'opencensus.ext.{}.trace'.format(item)
+        module_name = f'opencensus.ext.{item}.trace'
         try:
             module = importlib.import_module(module_name)
             module.trace_integration(tracer=tracer)
             integrated.append(item)
         except Exception as e:
-            log.warning('Failed to integrate module: {}'.format(module_name))
-            log.warning('{}'.format(e))
+            log.warning(f'Failed to integrate module: {module_name}')
+            log.warning(f'{e}')
 
     return integrated

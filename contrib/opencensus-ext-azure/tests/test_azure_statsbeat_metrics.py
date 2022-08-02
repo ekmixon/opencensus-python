@@ -449,10 +449,7 @@ class TestStatsbeatMetrics(unittest.TestCase):
 
     def test_get_attach_metric_vm(self):
         stats = _StatsbeatMetrics(_OPTIONS)
-        _vm_data = {}
-        _vm_data["vmId"] = "123"
-        _vm_data["subscriptionId"] = "sub123"
-        _vm_data["osType"] = "linux"
+        _vm_data = {"vmId": "123", "subscriptionId": "sub123", "osType": "linux"}
         stats._vm_data = _vm_data
         self._vm_retry = True
         metadata_mock = mock.Mock()
@@ -473,10 +470,7 @@ class TestStatsbeatMetrics(unittest.TestCase):
 
     def test_get_attach_metric_vm_no_os(self):
         stats = _StatsbeatMetrics(_OPTIONS)
-        _vm_data = {}
-        _vm_data["vmId"] = "123"
-        _vm_data["subscriptionId"] = "sub123"
-        _vm_data["osType"] = None
+        _vm_data = {"vmId": "123", "subscriptionId": "sub123", "osType": None}
         stats._vm_data = _vm_data
         self._vm_retry = True
         metadata_mock = mock.Mock()

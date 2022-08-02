@@ -153,8 +153,8 @@ class TestStandardMetrics(unittest.TestCase):
 
     def test_server_patch(self):
         standard_metrics. \
-            http_requests. \
-            ORIGINAL_CONSTRUCTOR = lambda x, y, z: None
+                http_requests. \
+                ORIGINAL_CONSTRUCTOR = lambda x, y, z: None
         with mock.patch('opencensus.ext.azure.metrics_exporter'
                         '.standard_metrics.http_requests'
                         '.request_patch') as request_mock:
@@ -166,8 +166,8 @@ class TestStandardMetrics(unittest.TestCase):
             handler.do_POST.return_value = None
             handler.do_PUT.return_value = None
             result = standard_metrics. \
-                http_requests. \
-                server_patch(None, None, handler)
+                    http_requests. \
+                    server_patch(None, None, handler)
             handler.do_DELETE()
             handler.do_GET()
             handler.do_HEAD()

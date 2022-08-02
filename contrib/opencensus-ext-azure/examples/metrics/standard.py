@@ -29,7 +29,7 @@ def main():
     _exporter = metrics_exporter.new_metrics_exporter()
 
     print(_exporter.max_batch_size)
-    for i in range(100):
+    for _ in range(100):
         print(psutil.virtual_memory())
         time.sleep(5)
 

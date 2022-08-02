@@ -90,45 +90,33 @@ class TestStackdriverExporter(unittest.TestCase):
         ]
 
         stackdriver_spans = {
-            'spans': [{
-                'status':
-                None,
-                'childSpanCount':
-                None,
-                'links':
-                None,
-                'startTime':
-                None,
-                'spanId':
-                '1111',
-                'attributes': {
-                    'attributeMap': {
-                        'g.co/agent': {
-                            'string_value': {
-                                'truncated_byte_count':
-                                0,
-                                'value':
-                                'opencensus-python [{}]'.format(__version__)
+            'spans': [
+                {
+                    'status': None,
+                    'childSpanCount': None,
+                    'links': None,
+                    'startTime': None,
+                    'spanId': '1111',
+                    'attributes': {
+                        'attributeMap': {
+                            'g.co/agent': {
+                                'string_value': {
+                                    'truncated_byte_count': 0,
+                                    'value': f'opencensus-python [{__version__}]',
+                                }
                             }
                         }
-                    }
-                },
-                'stackTrace':
-                None,
-                'displayName': {
-                    'truncated_byte_count': 0,
-                    'value': 'span'
-                },
-                'name':
-                'projects/PROJECT/traces/{}/spans/1111'.format(trace_id),
-                'timeEvents':
-                None,
-                'endTime':
-                None,
-                'sameProcessAsParentSpan':
-                None
-            }]
+                    },
+                    'stackTrace': None,
+                    'displayName': {'truncated_byte_count': 0, 'value': 'span'},
+                    'name': f'projects/PROJECT/traces/{trace_id}/spans/1111',
+                    'timeEvents': None,
+                    'endTime': None,
+                    'sameProcessAsParentSpan': None,
+                }
+            ]
         }
+
 
         client = mock.Mock()
         project_id = 'PROJECT'
@@ -139,7 +127,7 @@ class TestStackdriverExporter(unittest.TestCase):
 
         exporter.emit(span_datas)
 
-        name = 'projects/{}'.format(project_id)
+        name = f'projects/{project_id}'
 
         client.batch_write_spans.assert_called_with(name, stackdriver_spans)
         self.assertTrue(client.batch_write_spans.called)
@@ -208,52 +196,46 @@ class TestStackdriverExporter(unittest.TestCase):
 
         spans = list(exporter.translate_to_stackdriver(trace))
 
-        expected_traces = [{
-            'name': 'projects/{}/traces/{}/spans/{}'.format(
-                    project_id, trace_id, span_id),
-            'displayName': {
-                'value': span_name,
-                'truncated_byte_count': 0
-            },
-            'attributes': {
-                'attributeMap': {
-                    'g.co/agent': {
-                        'string_value': {
-                            'truncated_byte_count': 0,
-                            'value':
-                                'opencensus-python [{}]'.format(__version__)
-                        }
-                    },
-                    'key': {
-                        'string_value': {
-                            'truncated_byte_count': 0,
-                            'value': 'value'
-                        }
-                    },
-                    'key_double': {
-                        'double_value': {
-                            'value': 123.45
-                        }
-                    },
-                    '/http/host': {
-                        'string_value': {
-                            'truncated_byte_count': 0,
-                            'value': 'host'
-                        }
+        expected_traces = [
+            {
+                'name': f'projects/{project_id}/traces/{trace_id}/spans/{span_id}',
+                'displayName': {'value': span_name, 'truncated_byte_count': 0},
+                'attributes': {
+                    'attributeMap': {
+                        'g.co/agent': {
+                            'string_value': {
+                                'truncated_byte_count': 0,
+                                'value': f'opencensus-python [{__version__}]',
+                            }
+                        },
+                        'key': {
+                            'string_value': {
+                                'truncated_byte_count': 0,
+                                'value': 'value',
+                            }
+                        },
+                        'key_double': {'double_value': {'value': 123.45}},
+                        '/http/host': {
+                            'string_value': {
+                                'truncated_byte_count': 0,
+                                'value': 'host',
+                            }
+                        },
                     }
-                }
-            },
-            'spanId': str(span_id),
-            'startTime': start_time,
-            'endTime': end_time,
-            'parentSpanId': str(parent_span_id),
-            'status': None,
-            'links': None,
-            'stackTrace': None,
-            'timeEvents': None,
-            'childSpanCount': 0,
-            'sameProcessAsParentSpan': None
-        }]
+                },
+                'spanId': span_id,
+                'startTime': start_time,
+                'endTime': end_time,
+                'parentSpanId': parent_span_id,
+                'status': None,
+                'links': None,
+                'stackTrace': None,
+                'timeEvents': None,
+                'childSpanCount': 0,
+                'sameProcessAsParentSpan': None,
+            }
+        ]
+
 
         self.assertEqual(spans, expected_traces)
 
@@ -580,37 +562,37 @@ class Test_set_attributes_gae(unittest.TestCase):
                     'g.co/gae/app/module': {
                         'string_value': {
                             'truncated_byte_count': 0,
-                            'value': 'service'
+                            'value': 'service',
                         }
                     },
                     'g.co/gae/app/instance': {
                         'string_value': {
                             'truncated_byte_count': 0,
-                            'value': 'flex'
+                            'value': 'flex',
                         }
                     },
                     'g.co/gae/app/version': {
                         'string_value': {
                             'truncated_byte_count': 0,
-                            'value': 'version'
+                            'value': 'version',
                         }
                     },
                     'g.co/gae/app/project': {
                         'string_value': {
                             'truncated_byte_count': 0,
-                            'value': 'project'
+                            'value': 'project',
                         }
                     },
                     'g.co/agent': {
                         'string_value': {
                             'truncated_byte_count': 0,
-                            'value':
-                            'opencensus-python [{}]'.format(__version__)
+                            'value': f'opencensus-python [{__version__}]',
                         }
                     },
                 }
             }
         }
+
 
         with mock.patch.dict(
                 os.environ, {
@@ -641,73 +623,67 @@ class TestMonitoredResourceAttributes(unittest.TestCase):
                     'g.co/gae/app/module': {
                         'string_value': {
                             'truncated_byte_count': 0,
-                            'value': 'service'
+                            'value': 'service',
                         }
                     },
                     'g.co/gae/app/instance': {
                         'string_value': {
                             'truncated_byte_count': 0,
-                            'value': 'flex'
+                            'value': 'flex',
                         }
                     },
                     'g.co/gae/app/version': {
                         'string_value': {
                             'truncated_byte_count': 0,
-                            'value': 'version'
+                            'value': 'version',
                         }
                     },
                     'g.co/gae/app/project': {
                         'string_value': {
                             'truncated_byte_count': 0,
-                            'value': 'project'
+                            'value': 'project',
                         }
                     },
                     'g.co/agent': {
                         'string_value': {
                             'truncated_byte_count': 0,
-                            'value':
-                            'opencensus-python [{}]'.format(__version__)
+                            'value': f'opencensus-python [{__version__}]',
                         }
                     },
                     'g.co/r/k8s_container/project_id': {
                         'string_value': {
                             'truncated_byte_count': 0,
-                            'value': 'my_project'
+                            'value': 'my_project',
                         }
                     },
                     'g.co/r/k8s_container/location': {
                         'string_value': {
                             'truncated_byte_count': 0,
-                            'value': 'zone1'
+                            'value': 'zone1',
                         }
                     },
                     'g.co/r/k8s_container/namespace_name': {
                         'string_value': {
                             'truncated_byte_count': 0,
-                            'value': 'namespace'
+                            'value': 'namespace',
                         }
                     },
                     'g.co/r/k8s_container/pod_name': {
-                        'string_value': {
-                            'truncated_byte_count': 0,
-                            'value': 'pod'
-                        }
+                        'string_value': {'truncated_byte_count': 0, 'value': 'pod'}
                     },
                     'g.co/r/k8s_container/cluster_name': {
                         'string_value': {
                             'truncated_byte_count': 0,
-                            'value': 'cluster'
+                            'value': 'cluster',
                         }
                     },
                     'g.co/r/k8s_container/container_name': {
-                        'string_value': {
-                            'truncated_byte_count': 0,
-                            'value': 'c1'
-                        }
+                        'string_value': {'truncated_byte_count': 0, 'value': 'c1'}
                     },
                 }
             }
         }
+
 
         mock_resource = mock.Mock()
         mock_resource.get_type.return_value = 'k8s_container'
@@ -745,31 +721,31 @@ class TestMonitoredResourceAttributes(unittest.TestCase):
                     'g.co/agent': {
                         'string_value': {
                             'truncated_byte_count': 0,
-                            'value':
-                            'opencensus-python [{}]'.format(__version__)
+                            'value': f'opencensus-python [{__version__}]',
                         }
                     },
                     'g.co/r/gce_instance/project_id': {
                         'string_value': {
                             'truncated_byte_count': 0,
-                            'value': 'my_project'
+                            'value': 'my_project',
                         }
                     },
                     'g.co/r/gce_instance/instance_id': {
                         'string_value': {
                             'truncated_byte_count': 0,
-                            'value': '12345'
+                            'value': '12345',
                         }
                     },
                     'g.co/r/gce_instance/zone': {
                         'string_value': {
                             'truncated_byte_count': 0,
-                            'value': 'zone1'
+                            'value': 'zone1',
                         }
                     },
                 }
             }
         }
+
 
         mock_resource = mock.Mock()
         mock_resource.get_type.return_value = 'gce_instance'
@@ -794,25 +770,25 @@ class TestMonitoredResourceAttributes(unittest.TestCase):
                     'g.co/agent': {
                         'string_value': {
                             'truncated_byte_count': 0,
-                            'value':
-                            'opencensus-python [{}]'.format(__version__)
+                            'value': f'opencensus-python [{__version__}]',
                         }
                     },
                     'g.co/r/aws_ec2_instance/aws_account': {
                         'string_value': {
                             'truncated_byte_count': 0,
-                            'value': '123456789012'
+                            'value': '123456789012',
                         }
                     },
                     'g.co/r/aws_ec2_instance/region': {
                         'string_value': {
                             'truncated_byte_count': 0,
-                            'value': 'aws:us-west-2'
+                            'value': 'aws:us-west-2',
                         }
                     },
                 }
             }
         }
+
 
         mock_resource = mock.Mock()
         mock_resource.get_type.return_value = 'aws_ec2_instance'
@@ -837,13 +813,13 @@ class TestMonitoredResourceAttributes(unittest.TestCase):
                     'g.co/agent': {
                         'string_value': {
                             'truncated_byte_count': 0,
-                            'value':
-                            'opencensus-python [{}]'.format(__version__)
+                            'value': f'opencensus-python [{__version__}]',
                         }
                     }
                 }
             }
         }
+
 
         mr_mock.return_value = None
         trace_exporter.set_attributes(trace)

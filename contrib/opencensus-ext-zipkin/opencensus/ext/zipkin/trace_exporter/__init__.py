@@ -89,11 +89,7 @@ class ZipkinExporter(base_exporter.Exporter):
 
     @property
     def get_url(self):
-        return '{}://{}:{}{}'.format(
-            self.protocol,
-            self.host_name,
-            self.port,
-            self.endpoint)
+        return f'{self.protocol}://{self.host_name}:{self.port}{self.endpoint}'
 
     def emit(self, span_datas):
         """Send SpanData tuples to Zipkin server, default using the v2 API.
@@ -113,8 +109,9 @@ class ZipkinExporter(base_exporter.Exporter):
 
             if result.status_code not in SUCCESS_STATUS_CODE:
                 logging.error(
-                    "Failed to send spans to Zipkin server! Spans are {}"
-                    .format(zipkin_spans))
+                    f"Failed to send spans to Zipkin server! Spans are {zipkin_spans}"
+                )
+
         except Exception as e:  # pragma: NO COVER
             logging.error(getattr(e, 'message', e))
 

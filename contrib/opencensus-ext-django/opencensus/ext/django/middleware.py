@@ -121,7 +121,7 @@ def _trace_db_call(execute, sql, params, many, context):
     alias = context['connection'].alias
 
     span = tracer.start_span()
-    span.name = '{}.query'.format(vendor)
+    span.name = f'{vendor}.query'
     span.span_kind = span_module.SpanKind.CLIENT
 
     tracer.add_attribute_to_current_span('component', vendor)
@@ -157,12 +157,12 @@ class OpencensusMiddleware(MiddlewareMixin):
             self.sampler = configuration.load(self.sampler)
 
         self.exporter = settings.get('EXPORTER', None) or \
-            print_exporter.PrintExporter()
+                print_exporter.PrintExporter()
         if isinstance(self.exporter, six.string_types):
             self.exporter = configuration.load(self.exporter)
 
         self.propagator = settings.get('PROPAGATOR', None) or \
-            trace_context_http_header_format.TraceContextPropagator()
+                trace_context_http_header_format.TraceContextPropagator()
         if isinstance(self.propagator, six.string_types):
             self.propagator = configuration.load(self.propagator)
 

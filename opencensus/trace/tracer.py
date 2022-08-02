@@ -75,9 +75,7 @@ class Tracer(object):
 
     def get_tracer(self):
         """Return a tracer according to the sampling decision."""
-        sampled = self.should_sample()
-
-        if sampled:
+        if sampled := self.should_sample():
             self.span_context.trace_options.set_enabled(True)
             return context_tracer.ContextTracer(
                 exporter=self.exporter,

@@ -89,7 +89,4 @@ class AwsIdentityDocumentUtils(object):
         instance-identity-documents.html.
         :return:
         """
-        if self.is_running_on_aws():
-            return aws_metadata_map
-
-        return dict()
+        return aws_metadata_map if self.is_running_on_aws() else {}

@@ -92,8 +92,8 @@ def parse_connection_string(connection_string):
             # Get regional information if provided
             prefix = result.get('location')
             if prefix is not None:
-                location_prefix = prefix + '.'
-            endpoint = 'https://' + location_prefix + 'dc.' + endpoint_suffix
+                location_prefix = f'{prefix}.'
+            endpoint = f'https://{location_prefix}dc.{endpoint_suffix}'
             result[INGESTION_ENDPOINT] = endpoint
         else:
             # Default to None if cannot construct

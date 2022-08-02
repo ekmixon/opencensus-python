@@ -277,7 +277,7 @@ class TestExportRpcInterface(unittest.TestCase):
 
         def _helper(request_iterator, context):
             # Ensure a stream has not been started before accepting a request.
-            if len(requests) != 0:
+            if requests:
                 return
 
             for request in request_iterator:
@@ -341,10 +341,10 @@ class TestExportRpcInterface(unittest.TestCase):
 
         self._add_and_start_service(GenericRpcHandler(_helper))
 
-        exporter = ocagent.new_stats_exporter(SERVICE_NAME,
-                                              endpoint='localhost:%s' %
-                                              self._port,
-                                              interval=0.1)
+        exporter = ocagent.new_stats_exporter(
+            SERVICE_NAME, endpoint=f'localhost:{self._port}', interval=0.1
+        )
+
 
         self.assertEqual(mock_transport.call_args[0][0][0], stats_module.stats)
         self.assertEqual(mock_transport.call_args[0][1], exporter)

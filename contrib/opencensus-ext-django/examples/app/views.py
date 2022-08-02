@@ -49,7 +49,7 @@ def greetings(request):
         if form.is_valid():
             first_name = form.cleaned_data['fname']
             last_name = form.cleaned_data['lname']
-            return HttpResponse("Hello, {} {}".format(first_name, last_name))
+            return HttpResponse(f"Hello, {first_name} {last_name}")
         else:
             return render(request, 'home.html')
 
@@ -70,10 +70,7 @@ def mysql_trace(request):
         query = 'SELECT 2*3'
         cursor.execute(query)
 
-        result = []
-
-        for item in cursor:
-            result.append(item)
+        result = list(cursor)
 
         return HttpResponse(str(result))
 
@@ -94,10 +91,7 @@ def postgresql_trace(request):
         query = 'SELECT 2*3'
         cursor.execute(query)
 
-        result = []
-
-        for item in cursor.fetchall():
-            result.append(item)
+        result = list(cursor.fetchall())
 
         return HttpResponse(str(result))
 
@@ -109,18 +103,16 @@ def postgresql_trace(request):
 def sqlalchemy_mysql_trace(request):
     try:
         engine = sqlalchemy.create_engine(
-            'mysql+mysqlconnector://{}:{}@{}'.format('root', MYSQL_PASSWORD,
-                                                     DB_HOST))
+            f'mysql+mysqlconnector://root:{MYSQL_PASSWORD}@{DB_HOST}'
+        )
+
         conn = engine.connect()
 
         query = 'SELECT 2*3'
 
         result_set = conn.execute(query)
 
-        result = []
-
-        for item in result_set:
-            result.append(item)
+        result = list(result_set)
 
         return HttpResponse(str(result))
 
@@ -131,18 +123,17 @@ def sqlalchemy_mysql_trace(request):
 
 def sqlalchemy_postgresql_trace(request):
     try:
-        engine = sqlalchemy.create_engine('postgresql://{}:{}@{}/{}'.format(
-            'postgres', POSTGRES_PASSWORD, DB_HOST, 'postgres'))
+        engine = sqlalchemy.create_engine(
+            f'postgresql://postgres:{POSTGRES_PASSWORD}@{DB_HOST}/postgres'
+        )
+
         conn = engine.connect()
 
         query = 'SELECT 2*3'
 
         result_set = conn.execute(query)
 
-        result = []
-
-        for item in result_set:
-            result.append(item)
+        result = list(result_set)
 
         return HttpResponse(str(result))
 

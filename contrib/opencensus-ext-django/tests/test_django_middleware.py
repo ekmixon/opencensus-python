@@ -83,7 +83,7 @@ class TestOpencensusMiddleware(unittest.TestCase):
 
         trace_id = '2dd43a1d6b2549c6bc2a1a54c2fc0b05'
         span_id = '6e0c63257de34c92'
-        django_trace_id = '00-{}-{}-00'.format(trace_id, span_id)
+        django_trace_id = f'00-{trace_id}-{span_id}-00'
 
         django_request = RequestFactory().get('/wiki/Rabbit', **{
             'HTTP_TRACEPARENT': django_trace_id})
@@ -186,7 +186,7 @@ class TestOpencensusMiddleware(unittest.TestCase):
 
         trace_id = '2dd43a1d6b2549c6bc2a1a54c2fc0b05'
         span_id = '6e0c63257de34c92'
-        django_trace_id = '00-{}-{}-00'.format(trace_id, span_id)
+        django_trace_id = f'00-{trace_id}-{span_id}-00'
 
         django_request = RequestFactory().get('/wiki/Rabbit', **{
             'traceparent': django_trace_id,
@@ -241,7 +241,7 @@ class TestOpencensusMiddleware(unittest.TestCase):
 
         trace_id = '2dd43a1d6b2549c6bc2a1a54c2fc0b05'
         span_id = '6e0c63257de34c92'
-        django_trace_id = '00-{}-{}-00'.format(trace_id, span_id)
+        django_trace_id = f'00-{trace_id}-{span_id}-00'
 
         django_request = RequestFactory().get('/wiki/Rabbit', **{
             'traceparent': django_trace_id,
@@ -298,7 +298,7 @@ class TestOpencensusMiddleware(unittest.TestCase):
 
         trace_id = '2dd43a1d6b2549c6bc2a1a54c2fc0b05'
         span_id = '6e0c63257de34c92'
-        django_trace_id = '00-{}-{}-00'.format(trace_id, span_id)
+        django_trace_id = f'00-{trace_id}-{span_id}-00'
 
         django_request = RequestFactory().get('/wiki/Rabbit', **{
             'traceparent': django_trace_id,
@@ -385,7 +385,7 @@ class Test__set_django_attributes(unittest.TestCase):
 
     def test__set_django_attributes_no_user_info(self):
         from opencensus.ext.django.middleware import \
-            _set_django_attributes
+                _set_django_attributes
         span = self.Span()
         request = mock.Mock()
         django_user = mock.Mock()
@@ -402,7 +402,7 @@ class Test__set_django_attributes(unittest.TestCase):
 
     def test__set_django_attributes_with_user_info(self):
         from opencensus.ext.django.middleware import \
-            _set_django_attributes
+                _set_django_attributes
         span = self.Span()
         request = mock.Mock()
         django_user = mock.Mock()

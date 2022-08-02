@@ -41,6 +41,8 @@ class DDTransport(object):
         :param trace: Trace dictionary
         """
 
-        requests.post("http://" + self.trace_addr + "/v0.4/traces",
-                      json=trace,
-                      headers=self.headers)
+        requests.post(
+            f"http://{self.trace_addr}/v0.4/traces",
+            json=trace,
+            headers=self.headers,
+        )

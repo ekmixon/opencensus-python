@@ -28,17 +28,8 @@ class LabelKey(object):
 
     def __repr__(self):
         if self.description:
-            return ('{}({}, description="{}")'
-                    .format(
-                        type(self).__name__,
-                        self.key,
-                        self.description
-                    ))
-        return ("{}({})"
-                .format(
-                    type(self).__name__,
-                    self.key,
-                ))
+            return f'{type(self).__name__}({self.key}, description="{self.description}")'
+        return f"{type(self).__name__}({self.key})"
 
     @property
     def key(self):

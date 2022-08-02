@@ -16,9 +16,9 @@ from opencensus.trace.span_context import SpanContext
 from opencensus.trace.trace_options import TraceOptions
 
 _OPENCENSUS_TRACE_PREFIX = 'opencensus-trace'
-_TRACE_ID_KEY = '{}-traceid'.format(_OPENCENSUS_TRACE_PREFIX)
-_SPAN_ID_KEY = '{}-spanid'.format(_OPENCENSUS_TRACE_PREFIX)
-_TRACE_OPTIONS_KEY = '{}-traceoptions'.format(_OPENCENSUS_TRACE_PREFIX)
+_TRACE_ID_KEY = f'{_OPENCENSUS_TRACE_PREFIX}-traceid'
+_SPAN_ID_KEY = f'{_OPENCENSUS_TRACE_PREFIX}-spanid'
+_TRACE_OPTIONS_KEY = f'{_OPENCENSUS_TRACE_PREFIX}-traceoptions'
 
 DEFAULT_TRACE_OPTIONS = '1'
 

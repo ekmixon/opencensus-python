@@ -62,9 +62,7 @@ class TraceOptions(object):
         :rtype: bool
         :returns: Enabled tracing or not.
         """
-        enabled = bool(int(self.trace_options_byte) & _ENABLED_BITMASK)
-
-        return enabled
+        return bool(int(self.trace_options_byte) & _ENABLED_BITMASK)
 
     def set_enabled(self, enabled):
         """Update the last bit of the trace options byte str.

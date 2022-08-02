@@ -18,12 +18,12 @@ from collections import OrderedDict
 _KEY_WITHOUT_VENDOR_FORMAT = r'[a-z][_0-9a-z\-\*\/]{0,255}'
 _KEY_WITH_VENDOR_FORMAT = \
     r'[a-z][_0-9a-z\-\*\/]{0,240}@[a-z][_0-9a-z\-\*\/]{0,13}'
-_KEY_FORMAT = _KEY_WITHOUT_VENDOR_FORMAT + '|' + _KEY_WITH_VENDOR_FORMAT
+_KEY_FORMAT = f'{_KEY_WITHOUT_VENDOR_FORMAT}|{_KEY_WITH_VENDOR_FORMAT}'
 _VALUE_FORMAT = \
     r'[\x20-\x2b\x2d-\x3c\x3e-\x7e]{0,255}[\x21-\x2b\x2d-\x3c\x3e-\x7e]'
 
-_KEY_VALIDATION_RE = re.compile('^' + _KEY_FORMAT + '$')
-_VALUE_VALIDATION_RE = re.compile('^' + _VALUE_FORMAT + '$')
+_KEY_VALIDATION_RE = re.compile(f'^{_KEY_FORMAT}$')
+_VALUE_VALIDATION_RE = re.compile(f'^{_VALUE_FORMAT}$')
 
 
 class Tracestate(OrderedDict):
@@ -47,12 +47,7 @@ class Tracestate(OrderedDict):
     # if the tracestate value size is bigger than 512 characters, the tracer
     # CAN decide to forward the tracestate
     def is_valid(self):
-        if len(self) == 0:
-            return False
-        # there can be a maximum of 32 list-members in a list
-        if len(self) > 32:
-            return False
-        return True
+        return False if len(self) == 0 else len(self) <= 32
 
     def prepend(self, key, value):
         self[key] = value

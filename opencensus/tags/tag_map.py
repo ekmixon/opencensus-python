@@ -27,7 +27,7 @@ class TagMap(object):
     """
 
     def __init__(self, tags=None):
-        self.map = OrderedDict(tags if tags else [])
+        self.map = OrderedDict(tags or [])
 
     def __iter__(self):
         return self.map.items().__iter__()

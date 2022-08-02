@@ -139,10 +139,10 @@ def _wrap_rpc_behavior(handler, fn):
     if handler.request_streaming and handler.response_streaming:
         behavior_fn = handler.stream_stream
         handler_factory = grpc.stream_stream_rpc_method_handler
-    elif handler.request_streaming and not handler.response_streaming:
+    elif handler.request_streaming:
         behavior_fn = handler.stream_unary
         handler_factory = grpc.stream_unary_rpc_method_handler
-    elif not handler.request_streaming and handler.response_streaming:
+    elif handler.response_streaming:
         behavior_fn = handler.unary_stream
         handler_factory = grpc.unary_stream_rpc_method_handler
     else:
@@ -163,4 +163,4 @@ def _get_span_name(servicer_context):
     if isinstance(method_name, bytes):
         method_name = method_name.decode('utf-8')
     method_name = method_name.replace('/', '.')
-    return '{}.{}'.format(RECV_PREFIX, method_name)
+    return f'{RECV_PREFIX}.{method_name}'

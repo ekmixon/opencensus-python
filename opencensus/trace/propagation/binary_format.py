@@ -44,19 +44,22 @@ UNSIGNED_LONG_LONG = 'Q'
 
 # Adding big endian indicator at the beginning to avoid auto padding. This is
 # for ensuring the length of binary is not changed when propagating.
-BINARY_FORMAT = '{big_endian}{version_id}' \
-    '{trace_id_field_id}{trace_id}' \
-    '{span_id_field_id}{span_id}' \
-    '{trace_option_field_id}{trace_option}'\
-    .format(
+BINARY_FORMAT = (
+    '{big_endian}{version_id}'
+    '{trace_id_field_id}{trace_id}'
+    '{span_id_field_id}{span_id}'
+    '{trace_option_field_id}{trace_option}'.format(
         big_endian=BIG_ENDIAN,
         version_id=UNSIGNED_CHAR,
         trace_id_field_id=UNSIGNED_CHAR,
-        trace_id='{}{}'.format(TRACE_ID_SIZE, CHAR_ARRAY_FORMAT),
+        trace_id=f'{TRACE_ID_SIZE}{CHAR_ARRAY_FORMAT}',
         span_id_field_id=UNSIGNED_CHAR,
-        span_id='{}{}'.format(SPAN_ID_SIZE, CHAR_ARRAY_FORMAT),
+        span_id=f'{SPAN_ID_SIZE}{CHAR_ARRAY_FORMAT}',
         trace_option_field_id=UNSIGNED_CHAR,
-        trace_option=UNSIGNED_CHAR)
+        trace_option=UNSIGNED_CHAR,
+    )
+)
+
 
 Header = collections.namedtuple(
     'Header',
@@ -114,11 +117,9 @@ class BinaryFormatPropagator(object):
             data = Header._make(struct.unpack(BINARY_FORMAT, binary))
         except struct.error:
             logging.warning(
-                'Cannot parse the incoming binary data {}, '
-                'wrong format. Total bytes length should be {}.'.format(
-                    binary, FORMAT_LENGTH
-                )
+                f'Cannot parse the incoming binary data {binary}, wrong format. Total bytes length should be {FORMAT_LENGTH}.'
             )
+
             return span_context_module.SpanContext(from_header=False)
 
         # data.trace_id is in bytes with length 16, hexlify it to hex bytes
@@ -127,13 +128,12 @@ class BinaryFormatPropagator(object):
         span_id = str(binascii.hexlify(data.span_id).decode(UTF8))
         trace_options = TraceOptions(data.trace_option)
 
-        span_context = span_context_module.SpanContext(
-                trace_id=trace_id,
-                span_id=span_id,
-                trace_options=trace_options,
-                from_header=True)
-
-        return span_context
+        return span_context_module.SpanContext(
+            trace_id=trace_id,
+            span_id=span_id,
+            trace_options=trace_options,
+            from_header=True,
+        )
 
     def to_header(self, span_context):
         """Convert a SpanContext object to header in binary format.

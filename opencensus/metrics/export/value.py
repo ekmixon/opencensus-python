@@ -32,11 +32,7 @@ class ValueDouble(object):
         self._value = value
 
     def __repr__(self):
-        return ("{}({})"
-                .format(
-                    type(self).__name__,
-                    self.value,
-                ))
+        return f"{type(self).__name__}({self.value})"
 
     @property
     def value(self):
@@ -54,11 +50,7 @@ class ValueLong(object):
         self._value = value
 
     def __repr__(self):
-        return ("{}({})"
-                .format(
-                    type(self).__name__,
-                    self.value,
-                ))
+        return f"{type(self).__name__}({self.value})"
 
     @property
     def value(self):
@@ -76,11 +68,7 @@ class ValueSummary(object):
         self._value = value
 
     def __repr__(self):
-        return ("{}({})"
-                .format(
-                    type(self).__name__,
-                    self.value,
-                ))
+        return f"{type(self).__name__}({self.value})"
 
     @property
     def value(self):
@@ -111,11 +99,7 @@ class Exemplar(object):
         self._attachments = attachments
 
     def __repr__(self):
-        return ("{}({})"
-                .format(
-                    type(self).__name__,
-                    self.value,
-                ))
+        return f"{type(self).__name__}({self.value})"
 
     @property
     def value(self):
@@ -146,11 +130,7 @@ class Bucket(object):
         self._exemplar = exemplar
 
     def __repr__(self):
-        return ("{}({})"
-                .format(
-                    type(self).__name__,
-                    self.count,
-                ))
+        return f"{type(self).__name__}({self.count})"
 
     @property
     def count(self):
@@ -201,11 +181,7 @@ class BucketOptions(object):
         self._type = type_
 
     def __repr__(self):
-        return ("{}({})"
-                .format(
-                    type(self).__name__,
-                    self.type_,
-                ))
+        return f"{type(self).__name__}({self.type_})"
 
     @property
     def type_(self):
@@ -280,11 +256,7 @@ class ValueDistribution(object):
         except AttributeError:
             bounds = None
 
-        return ("{}({})"
-                .format(
-                    type(self).__name__,
-                    bounds
-                ))
+        return f"{type(self).__name__}({bounds})"
 
     @property
     def count(self):

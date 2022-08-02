@@ -106,16 +106,13 @@ class SpanContext(object):
             self.from_header = False
             return None
 
-        match = SPAN_ID_PATTERN.match(span_id)
-
-        if match:
+        if match := SPAN_ID_PATTERN.match(span_id):
             return span_id
-        else:
-            logging.warning(
-                'Span_id %s does not the match the '
-                'required format', span_id)
-            self.from_header = False
-            return None
+        logging.warning(
+            'Span_id %s does not the match the '
+            'required format', span_id)
+        self.from_header = False
+        return None
 
     def _check_trace_id(self, trace_id):
         """Check the format of the trace_id to ensure it is 32-character hex
@@ -137,16 +134,13 @@ class SpanContext(object):
             self.from_header = False
             return generate_trace_id()
 
-        match = TRACE_ID_PATTERN.match(trace_id)
-
-        if match:
+        if match := TRACE_ID_PATTERN.match(trace_id):
             return trace_id
-        else:
-            logging.warning(
-                'Trace_id %s does not the match the required format,'
-                'generating a new one instead.', trace_id)
-            self.from_header = False
-            return generate_trace_id()
+        logging.warning(
+            'Trace_id %s does not the match the required format,'
+            'generating a new one instead.', trace_id)
+        self.from_header = False
+        return generate_trace_id()
 
 
 def generate_span_id():

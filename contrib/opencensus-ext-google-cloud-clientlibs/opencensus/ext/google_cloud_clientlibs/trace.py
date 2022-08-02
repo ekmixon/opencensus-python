@@ -35,7 +35,7 @@ def trace_integration(tracer=None):
     """Trace the Google Cloud Client libraries by integrating with
     the transport level including HTTP and gRPC.
     """
-    log.info('Integrated module: {}'.format(MODULE_NAME))
+    log.info(f'Integrated module: {MODULE_NAME}')
 
     # Integrate with gRPC
     trace_grpc(tracer)

@@ -27,7 +27,7 @@ class TestOptions(unittest.TestCase):
         options.connection_string = 'Authorization=ikey;InstrumentationKey=123'
         options.instrumentation_key = '456'
         os.environ['APPLICATIONINSIGHTS_CONNECTION_STRING'] = \
-            'Authorization=ikey;InstrumentationKey=789'
+                'Authorization=ikey;InstrumentationKey=789'
         os.environ['APPINSIGHTS_INSTRUMENTATIONKEY'] = '101112'
         common.process_options(options)
 
@@ -38,7 +38,7 @@ class TestOptions(unittest.TestCase):
         options.connection_string = None
         options.instrumentation_key = '456'
         os.environ['APPLICATIONINSIGHTS_CONNECTION_STRING'] = \
-            'Authorization=ikey;InstrumentationKey=789'
+                'Authorization=ikey;InstrumentationKey=789'
         os.environ['APPINSIGHTS_INSTRUMENTATIONKEY'] = '101112'
         common.process_options(options)
 
@@ -49,7 +49,7 @@ class TestOptions(unittest.TestCase):
         options.connection_string = None
         options.instrumentation_key = None
         os.environ['APPLICATIONINSIGHTS_CONNECTION_STRING'] = \
-            'Authorization=ikey;InstrumentationKey=789'
+                'Authorization=ikey;InstrumentationKey=789'
         os.environ['APPINSIGHTS_INSTRUMENTATIONKEY'] = '101112'
         common.process_options(options)
 
@@ -68,7 +68,7 @@ class TestOptions(unittest.TestCase):
         options = common.Options()
         options.connection_string = 'Authorization=ikey;IngestionEndpoint=123'
         os.environ['APPLICATIONINSIGHTS_CONNECTION_STRING'] = \
-            'Authorization=ikey;IngestionEndpoint=456'
+                'Authorization=ikey;IngestionEndpoint=456'
         common.process_options(options)
 
         self.assertEqual(options.endpoint, '123')
@@ -77,7 +77,7 @@ class TestOptions(unittest.TestCase):
         options = common.Options()
         options.connection_string = None
         os.environ['APPLICATIONINSIGHTS_CONNECTION_STRING'] = \
-            'Authorization=ikey;IngestionEndpoint=456'
+                'Authorization=ikey;IngestionEndpoint=456'
         common.process_options(options)
 
         self.assertEqual(options.endpoint, '456')

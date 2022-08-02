@@ -251,12 +251,11 @@ class TestStackdriverStatsExporter(unittest.TestCase):
 
     def test_namespaced_views(self):
         view_name = "view-1"
-        expected_view_name_namespaced = (
-            "custom.googleapis.com/opencensus/{}".format(view_name))
+        expected_view_name_namespaced = f"custom.googleapis.com/opencensus/{view_name}"
         view_name_namespaced = stackdriver.namespaced_view_name(view_name, "")
         self.assertEqual(expected_view_name_namespaced, view_name_namespaced)
 
-        expected_view_name_namespaced = "kubernetes.io/myorg/%s" % view_name
+        expected_view_name_namespaced = f"kubernetes.io/myorg/{view_name}"
         view_name_namespaced = stackdriver.namespaced_view_name(
             view_name, "kubernetes.io/myorg")
         self.assertEqual(expected_view_name_namespaced, view_name_namespaced)
@@ -729,7 +728,9 @@ class TestCreateTimeseries(unittest.TestCase):
         [time_series] = time_series_batch
         self.assertEqual(
             time_series.metric.type,
-            'custom.googleapis.com/opencensus/' + VIDEO_SIZE_VIEW_NAME)
+            f'custom.googleapis.com/opencensus/{VIDEO_SIZE_VIEW_NAME}',
+        )
+
         self.check_labels(
             time_series.metric.labels, {}, include_opencensus=True)
 
@@ -1273,7 +1274,7 @@ class TestCreateTimeseries(unittest.TestCase):
                 return_value=None)
     def test_create_timeseries_disjoint_tags(self, monitoring_resoure_mock):
         view_manager, stats_recorder, exporter = \
-            self.setup_create_timeseries_test()
+                self.setup_create_timeseries_test()
 
         # Register view with two tags
         view_name = "view-name"
@@ -1303,8 +1304,11 @@ class TestCreateTimeseries(unittest.TestCase):
 
         # Verify first time series
         self.assertEqual(time_series.resource.type, "global")
-        self.assertEqual(time_series.metric.type,
-                         "custom.googleapis.com/opencensus/" + view_name)
+        self.assertEqual(
+            time_series.metric.type,
+            f"custom.googleapis.com/opencensus/{view_name}",
+        )
+
         self.check_labels(
             time_series.metric.labels, {FRONTEND_KEY_CLEAN: "1200"},
             include_opencensus=True)
@@ -1341,8 +1345,9 @@ class TestCreateTimeseries(unittest.TestCase):
             sum_of_sqd_deviations=825,
             counts_per_bucket=[20, 20, 20, 20, 20],
             bounds=[2, 4, 6, 8],
-            exemplars={mock.Mock() for ii in range(5)}
+            exemplars={mock.Mock() for _ in range(5)},
         )
+
         v_data._tag_value_aggregation_data_map = {('tag_value',): dad}
 
         v_data = metric_utils.view_data_to_metric(v_data, TEST_TIME)

@@ -81,7 +81,7 @@ class BlankSpan(base_span.BaseSpan):
     @property
     def children(self):
         """The child spans of the current BlankSpan."""
-        return list()
+        return []
 
     def span(self, name='child_span'):
         """Create a child span for the current span and append it to the child

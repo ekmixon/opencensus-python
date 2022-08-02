@@ -23,11 +23,7 @@ class LabelValue(object):
         self._value = value
 
     def __repr__(self):
-        return ("{}({})"
-                .format(
-                    type(self).__name__,
-                    self.value,
-                ))
+        return f"{type(self).__name__}({self.value})"
 
     @property
     def value(self):

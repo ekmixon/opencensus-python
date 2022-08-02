@@ -27,7 +27,7 @@ CONN_WRAP_METHOD = 'connect'
 
 def trace_integration(tracer=None):
     """Wrap the mysql connector to trace it."""
-    logging.info('Integrated module: {}'.format(MODULE_NAME))
+    logging.info(f'Integrated module: {MODULE_NAME}')
     conn_func = getattr(pymysql, CONN_WRAP_METHOD)
     conn_module = inspect.getmodule(conn_func)
     wrapped = trace.wrap_conn(conn_func)

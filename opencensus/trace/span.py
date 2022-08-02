@@ -49,12 +49,7 @@ class BoundedList(Sequence):
         self._lock = threading.Lock()
 
     def __repr__(self):
-        return ("{}({}, maxlen={})"
-                .format(
-                    type(self).__name__,
-                    list(self._dq),
-                    self._dq.maxlen
-                ))
+        return f"{type(self).__name__}({list(self._dq)}, maxlen={self._dq.maxlen})"
 
     def __getitem__(self, index):
         return self._dq[index]
@@ -97,12 +92,7 @@ class BoundedDict(MutableMapping):
         self._lock = threading.Lock()
 
     def __repr__(self):
-        return ("{}({}, maxlen={})"
-                .format(
-                    type(self).__name__,
-                    dict(self._dict),
-                    self.maxlen
-                ))
+        return f"{type(self).__name__}({dict(self._dict)}, maxlen={self.maxlen})"
 
     def __getitem__(self, key):
         return self._dict[key]
@@ -262,11 +252,7 @@ class Span(base_span.BaseSpan):
         else:
             self.links = BoundedList.from_seq(MAX_NUM_LINKS, links)
 
-        if status is None:
-            self.status = status_module.Status.as_ok()
-        else:
-            self.status = status
-
+        self.status = status_module.Status.as_ok() if status is None else status
         self.span_id = span_id
         self.stack_trace = stack_trace
         self.same_process_as_parent_span = same_process_as_parent_span
@@ -345,8 +331,9 @@ class Span(base_span.BaseSpan):
         if isinstance(link, link_module.Link):
             self.links.append(link)
         else:
-            raise TypeError("Type Error: received {}, but requires Link.".
-                            format(type(link).__name__))
+            raise TypeError(
+                f"Type Error: received {type(link).__name__}, but requires Link."
+            )
 
     def set_status(self, status):
         """Sets span status.
@@ -357,8 +344,9 @@ class Span(base_span.BaseSpan):
         if isinstance(status, status_module.Status):
             self.status = status
         else:
-            raise TypeError("Type Error: received {}, but requires Status.".
-                            format(type(status).__name__))
+            raise TypeError(
+                f"Type Error: received {type(status).__name__}, but requires Status."
+            )
 
     def start(self):
         """Set the start time for a span."""
@@ -370,8 +358,7 @@ class Span(base_span.BaseSpan):
 
     def __iter__(self):
         """Iterate through the span tree."""
-        for span in chain.from_iterable(map(iter, self.children)):
-            yield span
+        yield from chain.from_iterable(map(iter, self.children))
         yield self
 
     def __enter__(self):
@@ -410,11 +397,7 @@ def format_span_json(span):
         'childSpanCount': len(span._child_spans)
     }
 
-    parent_span_id = None
-
-    if span.parent_span is not None:
-        parent_span_id = span.parent_span.span_id
-
+    parent_span_id = None if span.parent_span is None else span.parent_span.span_id
     if parent_span_id is not None:
         span_json['parentSpanId'] = parent_span_id
 

@@ -67,7 +67,7 @@ class Test_threading_trace(unittest.TestCase):
                                 mock_pool)
 
         with patch_wrap_start, patch_wrap_run, patch_wrap_apply_async, \
-                patch_threading, patch_pool:
+                    patch_threading, patch_pool:
             trace.trace_integration()
 
         self.assertEqual(

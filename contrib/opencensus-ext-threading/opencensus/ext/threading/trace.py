@@ -27,7 +27,7 @@ MODULE_NAME = "threading"
 
 def trace_integration(tracer=None):
     """Wrap threading functions to trace."""
-    log.info("Integrated module: {}".format(MODULE_NAME))
+    log.info(f"Integrated module: {MODULE_NAME}")
     # Wrap the threading start function
     start_func = getattr(threading.Thread, "start")
     setattr(

@@ -36,7 +36,7 @@ class PyramidTraceSettings(object):
     def __getattr__(self, attr):
         # If not in defaults, it is something we cannot parse.
         if attr not in DEFAULT_PYRAMID_TRACER_CONFIG:
-            raise AttributeError('Attribute {} does not exist.'.format(attr))
+            raise AttributeError(f'Attribute {attr} does not exist.')
 
         return self.settings[attr]
 

@@ -30,11 +30,7 @@ azure_monitor_context = {
     'ai.device.locale': locale.getdefaultlocale()[0],
     'ai.device.osVersion': platform.version(),
     'ai.device.type': 'Other',
-    'ai.internal.sdkVersion': 'py{}:oc{}:ext{}'.format(
-        platform.python_version(),
-        opencensus_version,
-        ext_version,
-    ),
+    'ai.internal.sdkVersion': f'py{platform.python_version()}:oc{opencensus_version}:ext{ext_version}',
 }
 
 

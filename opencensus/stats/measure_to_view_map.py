@@ -72,8 +72,7 @@ class MeasureToViewMap(object):
 
     def filter_exported_views(self, all_views):
         """returns the subset of the given view that should be exported"""
-        views = set(all_views)
-        return views
+        return set(all_views)
 
     # TODO: deprecate
     def register_view(self, view, timestamp):

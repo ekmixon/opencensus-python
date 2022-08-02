@@ -93,10 +93,6 @@ class TraceExporter(base_exporter.Exporter):
             responses = self.client.Export(
                 self.generate_span_requests(span_datas))
 
-            # read response
-            for _ in responses:
-                pass
-
         except grpc.RpcError:
             pass
 
@@ -157,8 +153,7 @@ class TraceExporter(base_exporter.Exporter):
             config_responses = self.client.Config(
                 self.generate_config_request(config))
 
-            agent_config = next(config_responses)
-            return agent_config
+            return next(config_responses)
 
     def generate_config_request(self, config):
         """ConfigTraceServiceRequest generator.
@@ -171,9 +166,4 @@ class TraceExporter(base_exporter.Exporter):
         :returns: Iterator of config requests.
         """
 
-        # TODO: send node once per channel
-        request = trace_service_pb2.CurrentLibraryConfig(
-            node=self.node,
-            config=config)
-
-        yield request
+        yield trace_service_pb2.CurrentLibraryConfig(node=self.node, config=config)

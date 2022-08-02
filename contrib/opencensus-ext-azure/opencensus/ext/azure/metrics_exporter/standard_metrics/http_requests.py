@@ -24,7 +24,7 @@ else:
     from http.server import HTTPServer
 
 _requests_lock = threading.Lock()
-requests_map = dict()
+requests_map = {}
 ORIGINAL_CONSTRUCTOR = HTTPServer.__init__
 
 
@@ -53,8 +53,7 @@ def update_request_state(start_time, end_time):
 
 def server_patch(*args, **kwargs):
     if len(args) >= 3:
-        handler = args[2]
-        if handler:
+        if handler := args[2]:
             # Patch the handler methods if they exist
             if "do_DELETE" in dir(handler):
                 handler.do_DELETE = request_patch(handler.do_DELETE)
@@ -68,8 +67,7 @@ def server_patch(*args, **kwargs):
                 handler.do_POST = request_patch(handler.do_POST)
             if "do_PUT" in dir(handler):
                 handler.do_PUT = request_patch(handler.do_PUT)
-    result = ORIGINAL_CONSTRUCTOR(*args, **kwargs)
-    return result
+    return ORIGINAL_CONSTRUCTOR(*args, **kwargs)
 
 
 def setup():

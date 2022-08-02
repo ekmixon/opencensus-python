@@ -47,17 +47,10 @@ class TimeSeries(object):
         self._start_timestamp = start_timestamp
 
     def __repr__(self):
-        points_repr = '[{}]'.format(
-            ', '.join(repr(point.value) for point in self.points))
+        points_repr = f"[{', '.join((repr(point.value) for point in self.points))}]"
 
         lv_repr = tuple(lv.value for lv in self.label_values)
-        return ('{}({}, label_values={}, start_timestamp={})'
-                .format(
-                    type(self).__name__,
-                    points_repr,
-                    lv_repr,
-                    self.start_timestamp
-                ))
+        return f'{type(self).__name__}({points_repr}, label_values={lv_repr}, start_timestamp={self.start_timestamp})'
 
     @property
     def start_timestamp(self):
@@ -83,8 +76,7 @@ class TimeSeries(object):
         :rtype: bool
         :return: Whether all points are instances of `type_class`.
         """
-        for point in self.points:
-            if (point.value is not None
-                    and not isinstance(point.value, type_class)):
-                return False
-        return True
+        return not any(
+            (point.value is not None and not isinstance(point.value, type_class))
+            for point in self.points
+        )

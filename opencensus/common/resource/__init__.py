@@ -64,14 +64,10 @@ def merge_resources(resource_list):
     """
     if not resource_list:
         raise ValueError
-    rtype = None
-    for rr in resource_list:
-        if rr.type:
-            rtype = rr.type
-            break
+    rtype = next((rr.type for rr in resource_list if rr.type), None)
     labels = {}
     for rr in reversed(resource_list):
-        labels.update(rr.labels)
+        labels |= rr.labels
     return Resource(rtype, labels)
 
 
@@ -88,13 +84,10 @@ def check_ascii_256(string):
         return
     if len(string) > 256:
         raise ValueError("Value is longer than 256 characters")
-    bad_char = _NON_PRINTABLE_ASCII.search(string)
-    if bad_char:
-        raise ValueError(u'Character "{}" at position {} is not printable '
-                         'ASCII'
-                         .format(
-                             string[bad_char.start():bad_char.end()],
-                             bad_char.start()))
+    if bad_char := _NON_PRINTABLE_ASCII.search(string):
+        raise ValueError(
+            f'Character "{string[bad_char.start():bad_char.end()]}" at position {bad_char.start()} is not printable ASCII'
+        )
 
 
 class Resource(object):

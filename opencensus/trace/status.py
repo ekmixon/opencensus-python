@@ -58,9 +58,7 @@ class Status(object):
 
     def format_status_json(self):
         """Convert a Status object to json format."""
-        status_json = {}
-
-        status_json['code'] = self.canonical_code
+        status_json = {'code': self.canonical_code}
 
         if self.description is not None:
             status_json['message'] = self.description

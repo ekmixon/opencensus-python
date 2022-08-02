@@ -23,7 +23,7 @@ class Span(object):
         self.parent = RuntimeContext.current_span
 
     def __repr__(self):
-        return ('{}({})'.format(type(self).__name__, self.name))
+        return f'{type(self).__name__}({self.name})'
 
     def __enter__(self):
         RuntimeContext.current_span = self

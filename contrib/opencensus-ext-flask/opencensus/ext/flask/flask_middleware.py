@@ -151,9 +151,7 @@ class FlaskMiddleware(object):
             span = tracer.start_span()
             span.span_kind = span_module.SpanKind.SERVER
             # Set the span name as the name of the current module name
-            span.name = '[{}]{}'.format(
-                flask.request.method,
-                flask.request.url)
+            span.name = f'[{flask.request.method}]{flask.request.url}'
             tracer.add_attribute_to_current_span(
                 HTTP_HOST, flask.request.host
             )

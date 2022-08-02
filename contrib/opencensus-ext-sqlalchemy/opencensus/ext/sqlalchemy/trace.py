@@ -29,7 +29,7 @@ def trace_integration(tracer=None):
 
     See: http://docs.sqlalchemy.org/en/latest/core/events.html
     """
-    log.info('Integrated module: {}'.format(MODULE_NAME))
+    log.info(f'Integrated module: {MODULE_NAME}')
     trace_engine(engine.Engine)
     # pylint: disable=protected-access
     integrations.add_integration(integrations._Integrations.SQLALCHEMY)
@@ -56,28 +56,25 @@ def _before_cursor_execute(conn, cursor, statement, parameters,
          events.ConnectionEvents.before_cursor_execute
     """
     # Find out the func name
-    if executemany:
-        query_func = 'executemany'
-    else:
-        query_func = 'execute'
-
+    query_func = 'executemany' if executemany else 'execute'
     _tracer = execution_context.get_opencensus_tracer()
     _span = _tracer.start_span()
-    _span.name = '{}.query'.format(MODULE_NAME)
+    _span.name = f'{MODULE_NAME}.query'
     _span.span_kind = span_module.SpanKind.CLIENT
 
     # Set query statement attribute
-    _tracer.add_attribute_to_current_span(
-        '{}.query'.format(MODULE_NAME), statement)
+    _tracer.add_attribute_to_current_span(f'{MODULE_NAME}.query', statement)
 
     # Set query parameters attribute
     _tracer.add_attribute_to_current_span(
-        '{}.query.parameters'.format(MODULE_NAME), str(parameters))
+        f'{MODULE_NAME}.query.parameters', str(parameters)
+    )
+
 
     # Set query function attribute
     _tracer.add_attribute_to_current_span(
-        '{}.cursor.method.name'.format(MODULE_NAME),
-        query_func)
+        f'{MODULE_NAME}.cursor.method.name', query_func
+    )
 
 
 def _after_cursor_execute(conn, cursor, statement, parameters,

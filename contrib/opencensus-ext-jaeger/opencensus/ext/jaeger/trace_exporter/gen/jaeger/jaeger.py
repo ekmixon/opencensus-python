@@ -72,16 +72,17 @@ class Client(Iface):
 class Processor(Iface, TProcessor):
     def __init__(self, handler):
         self._handler = handler
-        self._processMap = {}
-        self._processMap["submitBatches"] = Processor.process_submitBatches
+        self._processMap = {"submitBatches": Processor.process_submitBatches}
 
     def process(self, iprot, oprot):
         (name, type, seqid) = iprot.readMessageBegin()
         if name not in self._processMap:
             iprot.skip(TType.STRUCT)
             iprot.readMessageEnd()
-            x = TApplicationException(TApplicationException.UNKNOWN_METHOD,
-                                      'Unknown function %s' % (name))
+            x = TApplicationException(
+                TApplicationException.UNKNOWN_METHOD, f'Unknown function {name}'
+            )
+
             oprot.writeMessageBegin(name, TMessageType.EXCEPTION, seqid)
             x.write(oprot)
             oprot.writeMessageEnd()
@@ -381,8 +382,8 @@ class Log(object):
 
     def read(self, iprot):
         if iprot._fast_decode is not None and \
-                isinstance(iprot.trans, TTransport.CReadableTransport) and \
-                self.thrift_spec is not None:
+                    isinstance(iprot.trans, TTransport.CReadableTransport) and \
+                    self.thrift_spec is not None:
             iprot._fast_decode(self, iprot, (self.__class__, self.thrift_spec))
             return
         iprot.readStructBegin()
@@ -390,24 +391,18 @@ class Log(object):
             (fname, ftype, fid) = iprot.readFieldBegin()
             if ftype == TType.STOP:
                 break
-            if fid == 1:
-                if ftype == TType.I64:
-                    self.timestamp = iprot.readI64()
-                else:
-                    iprot.skip(ftype)
-            elif fid == 2:
-                if ftype == TType.LIST:
-                    self.fields = []
-                    (_etype3, _size0) = iprot.readListBegin()
-                    for _i4 in range(_size0):
-                        _elem5 = Tag()
-                        _elem5.read(iprot)
-                        self.fields.append(_elem5)
-                    iprot.readListEnd()
-                else:
-                    iprot.skip(ftype)
-            else:
+            if fid == 1 and ftype == TType.I64:
+                self.timestamp = iprot.readI64()
+            elif fid == 1 or fid == 2 and ftype != TType.LIST or fid != 2:
                 iprot.skip(ftype)
+            else:
+                self.fields = []
+                (_etype3, _size0) = iprot.readListBegin()
+                for _i4 in range(_size0):
+                    _elem5 = Tag()
+                    _elem5.read(iprot)
+                    self.fields.append(_elem5)
+                iprot.readListEnd()
             iprot.readFieldEnd()
         iprot.readStructEnd()
 
@@ -895,22 +890,21 @@ class Span(object):
     def format_span_json(self):
         logs = []
         if self.logs is not None:
-            for log in self.logs:
-                logs.append({
-                    'timestamp':
-                    log.timestamp,
+            logs.extend(
+                {
+                    'timestamp': log.timestamp,
                     'fields': [tag.__dict__ for tag in log.fields]
-                    if log.fields is not None else None
-                })
+                    if log.fields is not None
+                    else None,
+                }
+                for log in self.logs
+            )
 
         refs = []
         if self.references is not None:
             refs = [ref.__dict__ for ref in self.references]
 
-        tags = []
-        if self.tags is not None:
-            tags = [tag.__dict__ for tag in self.tags]
-
+        tags = [tag.__dict__ for tag in self.tags] if self.tags is not None else []
         return {
             'traceIdHigh': self.traceIdHigh,
             'traceIdLow': self.traceIdLow,
@@ -961,8 +955,8 @@ class Process(object):
 
     def read(self, iprot):
         if iprot._fast_decode is not None and \
-                isinstance(iprot.trans, TTransport.CReadableTransport) and \
-                self.thrift_spec is not None:
+                    isinstance(iprot.trans, TTransport.CReadableTransport) and \
+                    self.thrift_spec is not None:
             iprot._fast_decode(self, iprot, (self.__class__, self.thrift_spec))
             return
         iprot.readStructBegin()
@@ -970,25 +964,19 @@ class Process(object):
             (fname, ftype, fid) = iprot.readFieldBegin()
             if ftype == TType.STOP:
                 break
-            if fid == 1:
-                if ftype == TType.STRING:
-                    self.serviceName = iprot.readString().decode('utf-8') \
+            if fid == 1 and ftype == TType.STRING:
+                self.serviceName = iprot.readString().decode('utf-8') \
                         if sys.version_info[0] == 2 else iprot.readString()
-                else:
-                    iprot.skip(ftype)
-            elif fid == 2:
-                if ftype == TType.LIST:
-                    self.tags = []
-                    (_etype31, _size28) = iprot.readListBegin()
-                    for _i32 in range(_size28):
-                        _elem33 = Tag()
-                        _elem33.read(iprot)
-                        self.tags.append(_elem33)
-                    iprot.readListEnd()
-                else:
-                    iprot.skip(ftype)
-            else:
+            elif fid == 1 or fid == 2 and ftype != TType.LIST or fid != 2:
                 iprot.skip(ftype)
+            else:
+                self.tags = []
+                (_etype31, _size28) = iprot.readListBegin()
+                for _i32 in range(_size28):
+                    _elem33 = Tag()
+                    _elem33.read(iprot)
+                    self.tags.append(_elem33)
+                iprot.readListEnd()
             iprot.readFieldEnd()
         iprot.readStructEnd()
 
@@ -1063,8 +1051,8 @@ class Batch(object):
 
     def read(self, iprot):
         if iprot._fast_decode is not None and \
-                isinstance(iprot.trans, TTransport.CReadableTransport) and \
-                self.thrift_spec is not None:
+                    isinstance(iprot.trans, TTransport.CReadableTransport) and \
+                    self.thrift_spec is not None:
             iprot._fast_decode(self, iprot, (self.__class__, self.thrift_spec))
             return
         iprot.readStructBegin()
@@ -1072,25 +1060,19 @@ class Batch(object):
             (fname, ftype, fid) = iprot.readFieldBegin()
             if ftype == TType.STOP:
                 break
-            if fid == 1:
-                if ftype == TType.STRUCT:
-                    self.process = Process()
-                    self.process.read(iprot)
-                else:
-                    iprot.skip(ftype)
-            elif fid == 2:
-                if ftype == TType.LIST:
-                    self.spans = []
-                    (_etype38, _size35) = iprot.readListBegin()
-                    for _i39 in range(_size35):
-                        _elem40 = Span()
-                        _elem40.read(iprot)
-                        self.spans.append(_elem40)
-                    iprot.readListEnd()
-                else:
-                    iprot.skip(ftype)
-            else:
+            if fid == 1 and ftype == TType.STRUCT:
+                self.process = Process()
+                self.process.read(iprot)
+            elif fid == 1 or fid == 2 and ftype != TType.LIST or fid != 2:
                 iprot.skip(ftype)
+            else:
+                self.spans = []
+                (_etype38, _size35) = iprot.readListBegin()
+                for _i39 in range(_size35):
+                    _elem40 = Span()
+                    _elem40.read(iprot)
+                    self.spans.append(_elem40)
+                iprot.readListEnd()
             iprot.readFieldEnd()
         iprot.readStructEnd()
 
@@ -1155,8 +1137,8 @@ class BatchSubmitResponse(object):
 
     def read(self, iprot):
         if iprot._fast_decode is not None and \
-                isinstance(iprot.trans, TTransport.CReadableTransport) and \
-                self.thrift_spec is not None:
+                    isinstance(iprot.trans, TTransport.CReadableTransport) and \
+                    self.thrift_spec is not None:
             iprot._fast_decode(self, iprot, (self.__class__, self.thrift_spec))
             return
         iprot.readStructBegin()
@@ -1164,11 +1146,8 @@ class BatchSubmitResponse(object):
             (fname, ftype, fid) = iprot.readFieldBegin()
             if ftype == TType.STOP:
                 break
-            if fid == 1:
-                if ftype == TType.BOOL:
-                    self.ok = iprot.readBool()
-                else:
-                    iprot.skip(ftype)
+            if fid == 1 and ftype == TType.BOOL:
+                self.ok = iprot.readBool()
             else:
                 iprot.skip(ftype)
             iprot.readFieldEnd()
@@ -1225,8 +1204,8 @@ class submitBatches_args(object):
 
     def read(self, iprot):
         if iprot._fast_decode is not None and \
-                isinstance(iprot.trans, TTransport.CReadableTransport) and \
-                self.thrift_spec is not None:
+                    isinstance(iprot.trans, TTransport.CReadableTransport) and \
+                    self.thrift_spec is not None:
             iprot._fast_decode(self, iprot, (self.__class__, self.thrift_spec))
             return
         iprot.readStructBegin()
@@ -1234,17 +1213,14 @@ class submitBatches_args(object):
             (fname, ftype, fid) = iprot.readFieldBegin()
             if ftype == TType.STOP:
                 break
-            if fid == 1:
-                if ftype == TType.LIST:
-                    self.batches = []
-                    (_etype45, _size42) = iprot.readListBegin()
-                    for _i46 in range(_size42):
-                        _elem47 = Batch()
-                        _elem47.read(iprot)
-                        self.batches.append(_elem47)
-                    iprot.readListEnd()
-                else:
-                    iprot.skip(ftype)
+            if fid == 1 and ftype == TType.LIST:
+                self.batches = []
+                (_etype45, _size42) = iprot.readListBegin()
+                for _i46 in range(_size42):
+                    _elem47 = Batch()
+                    _elem47.read(iprot)
+                    self.batches.append(_elem47)
+                iprot.readListEnd()
             else:
                 iprot.skip(ftype)
             iprot.readFieldEnd()
@@ -1302,8 +1278,8 @@ class submitBatches_result(object):
 
     def read(self, iprot):
         if iprot._fast_decode is not None and \
-                isinstance(iprot.trans, TTransport.CReadableTransport) and \
-                self.thrift_spec is not None:
+                    isinstance(iprot.trans, TTransport.CReadableTransport) and \
+                    self.thrift_spec is not None:
             iprot._fast_decode(self, iprot, (self.__class__, self.thrift_spec))
             return
         iprot.readStructBegin()
@@ -1311,17 +1287,14 @@ class submitBatches_result(object):
             (fname, ftype, fid) = iprot.readFieldBegin()
             if ftype == TType.STOP:
                 break
-            if fid == 0:
-                if ftype == TType.LIST:
-                    self.success = []
-                    (_etype52, _size49) = iprot.readListBegin()
-                    for _i53 in range(_size49):
-                        _elem54 = BatchSubmitResponse()
-                        _elem54.read(iprot)
-                        self.success.append(_elem54)
-                    iprot.readListEnd()
-                else:
-                    iprot.skip(ftype)
+            if fid == 0 and ftype == TType.LIST:
+                self.success = []
+                (_etype52, _size49) = iprot.readListBegin()
+                for _i53 in range(_size49):
+                    _elem54 = BatchSubmitResponse()
+                    _elem54.read(iprot)
+                    self.success.append(_elem54)
+                iprot.readListEnd()
             else:
                 iprot.skip(ftype)
             iprot.readFieldEnd()

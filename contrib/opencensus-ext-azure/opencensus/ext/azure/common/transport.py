@@ -74,7 +74,7 @@ class TransportMixin(object):
             endpoint = self.options.endpoint
             if self.options.credential:
                 token = self.options.credential.get_token(_MONITOR_OAUTH_SCOPE)
-                headers["Authorization"] = "Bearer {}".format(token.token)
+                headers["Authorization"] = f"Bearer {token.token}"
             endpoint += '/v2.1/track'
             if self._check_stats_collection():
                 with _requests_lock:
@@ -143,38 +143,36 @@ class TransportMixin(object):
         if self._check_stats_collection():
             with _requests_lock:
                 _requests_map['failure'] = _requests_map.get('failure', 0) + 1  # noqa: E501
-        if response.status_code == 206:  # Partial Content
-            if data:
-                try:
-                    resend_envelopes = []
-                    for error in data['errors']:
-                        if error['statusCode'] in (
-                                429,  # Too Many Requests
-                                500,  # Internal Server Error
-                                503,  # Service Unavailable
-                        ):
-                            resend_envelopes.append(envelopes[error['index']])
-                        else:
-                            logger.error(
-                                'Data drop %s: %s %s.',
-                                error['statusCode'],
-                                error['message'],
-                                envelopes[error['index']],
-                            )
-                    if resend_envelopes:
-                        self.storage.put(resend_envelopes)
-                except Exception as ex:
-                    logger.error(
-                        'Error while processing %s: %s %s.',
-                        response.status_code,
-                        text,
-                        ex,
-                    )
-                if self._check_stats_collection():
-                    with _requests_lock:
-                        _requests_map['retry'] = _requests_map.get('retry', 0) + 1  # noqa: E501
-                return -response.status_code
-            # cannot parse response body, fallback to retry
+        if response.status_code == 206 and data:
+            try:
+                resend_envelopes = []
+                for error in data['errors']:
+                    if error['statusCode'] in (
+                            429,  # Too Many Requests
+                            500,  # Internal Server Error
+                            503,  # Service Unavailable
+                    ):
+                        resend_envelopes.append(envelopes[error['index']])
+                    else:
+                        logger.error(
+                            'Data drop %s: %s %s.',
+                            error['statusCode'],
+                            error['message'],
+                            envelopes[error['index']],
+                        )
+                if resend_envelopes:
+                    self.storage.put(resend_envelopes)
+            except Exception as ex:
+                logger.error(
+                    'Error while processing %s: %s %s.',
+                    response.status_code,
+                    text,
+                    ex,
+                )
+            if self._check_stats_collection():
+                with _requests_lock:
+                    _requests_map['retry'] = _requests_map.get('retry', 0) + 1  # noqa: E501
+            return -response.status_code
         if response.status_code in (
                 206,  # Partial Content
                 429,  # Too Many Requests
@@ -222,12 +220,11 @@ class TransportMixin(object):
             self._consecutive_redirects += 1
             if self._consecutive_redirects < _MAX_CONSECUTIVE_REDIRECTS:
                 if response.headers:
-                    location = response.headers.get("location")
-                    if location:
+                    if location := response.headers.get("location"):
                         url = urlparse(location)
                         if url.scheme and url.netloc:
                             # Change the host to the new redirected host
-                            self.options.endpoint = "{}://{}".format(url.scheme, url.netloc)  # noqa: E501
+                            self.options.endpoint = f"{url.scheme}://{url.netloc}"
                             # Attempt to export again
                             return self._transmit(envelopes)
                 logger.error(

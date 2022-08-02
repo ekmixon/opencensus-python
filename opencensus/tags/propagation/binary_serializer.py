@@ -77,7 +77,7 @@ class BinarySerializer(object):
                 total_chars += len(val)
                 i += 1
                 if total_chars > \
-                        TAG_MAP_SERIALIZED_SIZE_LIMIT:  # pragma: NO COVER
+                            TAG_MAP_SERIALIZED_SIZE_LIMIT:  # pragma: NO COVER
                     logging.warning("Size of the tag context exceeds maximum")
                     break
                 else:
@@ -103,7 +103,7 @@ class BinarySerializer(object):
         i = 1
         while i <= length:
             bytes_to_decode = buffer[pos + i] if six.PY3 \
-                else ord(buffer[pos + i])
+                    else ord(buffer[pos + i])
             builder += _VarintBytes(bytes_to_decode).decode()
             i += 1
         return builder

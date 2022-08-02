@@ -37,7 +37,7 @@ def get_func_name(func):
 
     if module_name is not None:
         module_name = func.__module__
-        return '{}.{}'.format(module_name, func_name)
+        return f'{module_name}.{func_name}'
 
     return func_name
 
@@ -63,11 +63,7 @@ def disable_tracing_url(url, excludelist_paths=None):
     # Split the url by the first '/' and get the path part
     url_path = url.split('/', 1)[1]
 
-    for path in excludelist_paths:
-        if url_path.startswith(path):
-            return True
-
-    return False
+    return any(url_path.startswith(path) for path in excludelist_paths)
 
 
 def disable_tracing_hostname(url, excludelist_hostnames=None):
@@ -87,11 +83,9 @@ def disable_tracing_hostname(url, excludelist_hostnames=None):
         _tracer = execution_context.get_opencensus_tracer()
         try:
             excludelist_hostnames = [
-                '{}:{}'.format(
-                    _tracer.exporter.host_name,
-                    _tracer.exporter.port
-                )
+                f'{_tracer.exporter.host_name}:{_tracer.exporter.port}'
             ]
+
         except(AttributeError):
             excludelist_hostnames = []
 

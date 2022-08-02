@@ -50,7 +50,7 @@ VD_SUM = 1000.0
 VD_SUM_OF_SQUARED_DEVIATION = 10.0
 BOUNDS = list(range(1, 10))
 BUCKET_OPTIONS = value_module.BucketOptions(value_module.Explicit(BOUNDS))
-BUCKETS = [value_module.Bucket(10, None) for ii in range(10)]
+BUCKETS = [value_module.Bucket(10, None) for _ in range(10)]
 
 
 class TestValueDistribution(unittest.TestCase):

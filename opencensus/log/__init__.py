@@ -86,10 +86,7 @@ class TraceLoggingAdapter(logging.LoggerAdapter):
     """Adapter to add opencensus context attrs to records."""
     def process(self, msg, kwargs):
         kwargs = copy(kwargs)
-        if self.extra:
-            extra = copy(self.extra)
-        else:
-            extra = {}
+        extra = copy(self.extra) if self.extra else {}
         extra.update(kwargs.get('extra', {}))
         _set_extra_attrs(extra)
         kwargs['extra'] = extra

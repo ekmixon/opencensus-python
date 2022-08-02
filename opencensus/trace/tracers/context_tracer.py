@@ -64,8 +64,7 @@ class ContextTracer(base.Tracer):
         :rtype: :class:`~opencensus.trace.span.Span`
         :returns: The Span object.
         """
-        span = self.start_span(name=name)
-        return span
+        return self.start_span(name=name)
 
     def start_span(self, name='span'):
         """Start a span.
@@ -126,9 +125,7 @@ class ContextTracer(base.Tracer):
 
     def current_span(self):
         """Return the current span."""
-        current_span = execution_context.get_current_span()
-
-        return current_span
+        return execution_context.get_current_span()
 
     def list_collected_spans(self):
         return self._spans_list
@@ -151,13 +148,12 @@ class ContextTracer(base.Tracer):
         :rtype: list of opencensus.trace.span_data.SpanData
         :return list of SpanData tuples
         """
-        span_datas = [
+        return [
             span_data_module.SpanData(
                 name=ss.name,
                 context=self.span_context,
                 span_id=ss.span_id,
-                parent_span_id=ss.parent_span.span_id if
-                ss.parent_span else None,
+                parent_span_id=ss.parent_span.span_id if ss.parent_span else None,
                 attributes=ss.attributes,
                 start_time=ss.start_time,
                 end_time=ss.end_time,
@@ -168,9 +164,7 @@ class ContextTracer(base.Tracer):
                 links=ss.links,
                 status=ss.status,
                 same_process_as_parent_span=ss.same_process_as_parent_span,
-                span_kind=ss.span_kind
+                span_kind=ss.span_kind,
             )
             for ss in span
         ]
-
-        return span_datas

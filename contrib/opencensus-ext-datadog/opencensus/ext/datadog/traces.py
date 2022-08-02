@@ -272,8 +272,7 @@ def new_trace_exporter(option):
     if option.service == "":
         raise ValueError("Service can not be empty string.")
 
-    exporter = DatadogTraceExporter(options=option)
-    return exporter
+    return DatadogTraceExporter(options=option)
 
 
 def convert_id(str_id):
@@ -292,11 +291,9 @@ def convert_id(str_id):
     id_bitarray = bitarray.bitarray(endian='big')
     id_bitarray.frombytes(str_id.encode())
     cut_off = len(id_bitarray)
-    if cut_off > 64:
-        cut_off = 64
+    cut_off = min(cut_off, 64)
     id_cutoff_bytearray = id_bitarray[:cut_off].tobytes()
-    id_int = int(codecs.encode(id_cutoff_bytearray, 'hex'), 16)
-    return id_int
+    return int(codecs.encode(id_cutoff_bytearray, 'hex'), 16)
 
 
 # https://opencensus.io/tracing/span/status/

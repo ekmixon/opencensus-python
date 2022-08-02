@@ -134,10 +134,10 @@ class ValueAtPercentile(object):
 
 
 def check_count_and_sum(count, sum_data):
-    if not (count is None or count >= 0):
+    if count is not None and count < 0:
         raise ValueError('count must be non-negative')
 
-    if not (sum_data is None or sum_data >= 0):
+    if sum_data is not None and sum_data < 0:
         raise ValueError('sum_data must be non-negative')
 
     if count == 0 and sum_data != 0:

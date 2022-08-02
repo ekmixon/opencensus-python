@@ -55,9 +55,9 @@ class GoogleCloudFormatPropagator(object):
             raise
 
         if match:
-            trace_id = match.group(1)
-            span_id = match.group(3)
-            trace_options = match.group(5)
+            trace_id = match[1]
+            span_id = match[3]
+            trace_options = match[5]
 
             if trace_options is None:
                 trace_options = 1
@@ -65,12 +65,13 @@ class GoogleCloudFormatPropagator(object):
             if span_id:
                 span_id = '{:016x}'.format(int(span_id))
 
-            span_context = SpanContext(
+            return SpanContext(
                 trace_id=trace_id,
                 span_id=span_id,
                 trace_options=TraceOptions(trace_options),
-                from_header=True)
-            return span_context
+                from_header=True,
+            )
+
         else:
             logging.warning(
                 'Cannot parse the header %s, generate a new context instead.',
@@ -89,9 +90,7 @@ class GoogleCloudFormatPropagator(object):
         if headers is None:
             return SpanContext()
         header = headers.get(_TRACE_CONTEXT_HEADER_NAME)
-        if header is None:
-            return SpanContext()
-        return self.from_header(header)
+        return SpanContext() if header is None else self.from_header(header)
 
     def to_header(self, span_context):
         """Convert a SpanContext object to header string.
@@ -107,11 +106,7 @@ class GoogleCloudFormatPropagator(object):
         span_id = span_context.span_id
         trace_options = span_context.trace_options.trace_options_byte
 
-        header = '{}/{};o={}'.format(
-            trace_id,
-            int(span_id, 16),
-            int(trace_options))
-        return header
+        return f'{trace_id}/{int(span_id, 16)};o={int(trace_options)}'
 
     def to_headers(self, span_context):
         """Convert a SpanContext object to HTTP request headers.

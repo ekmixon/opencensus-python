@@ -89,47 +89,49 @@ class AzureExporter(BaseExporter, ProcessorMixin, TransportMixin):
 
         envelope.tags['ai.operation.id'] = sd.context.trace_id
         if sd.parent_span_id:
-            envelope.tags['ai.operation.parentId'] = '{}'.format(
-                sd.parent_span_id,
-            )
+            envelope.tags['ai.operation.parentId'] = f'{sd.parent_span_id}'
         if sd.span_kind == SpanKind.SERVER:
             if ERROR_MESSAGE in sd.attributes:
                 envelope.name = 'Microsoft.ApplicationInsights.Exception'
                 data = ExceptionData(
-                    exceptions=[{
-                        'id': 1,
-                        'outerId': '{}'.format(sd.span_id),
-                        'typeName': sd.attributes.get(ERROR_NAME, ''),
-                        'message': sd.attributes[ERROR_MESSAGE],
-                        'hasFullStack': STACKTRACE in sd.attributes,
-                        'parsedStack': sd.attributes.get(STACKTRACE, None)
-                    }],
+                    exceptions=[
+                        {
+                            'id': 1,
+                            'outerId': f'{sd.span_id}',
+                            'typeName': sd.attributes.get(ERROR_NAME, ''),
+                            'message': sd.attributes[ERROR_MESSAGE],
+                            'hasFullStack': STACKTRACE in sd.attributes,
+                            'parsedStack': sd.attributes.get(STACKTRACE, None),
+                        }
+                    ]
                 )
+
                 envelope.data = Data(baseData=data, baseType='ExceptionData')
                 yield envelope
 
             envelope.name = 'Microsoft.ApplicationInsights.Request'
             data = Request(
-                id='{}'.format(sd.span_id),
+                id=f'{sd.span_id}',
                 duration=utils.timestamp_to_duration(
                     sd.start_time,
                     sd.end_time,
                 ),
                 responseCode=str(sd.status.code),
-                success=False,  # Modify based off attributes or status
+                success=False,
                 properties={},
             )
+
             envelope.data = Data(baseData=data, baseType='RequestData')
             data.name = ''
             if HTTP_METHOD in sd.attributes:
                 data.name = sd.attributes[HTTP_METHOD]
             if HTTP_ROUTE in sd.attributes:
-                data.name = data.name + ' ' + sd.attributes[HTTP_ROUTE]
+                data.name = f'{data.name} {sd.attributes[HTTP_ROUTE]}'
                 envelope.tags['ai.operation.name'] = data.name
                 data.properties['request.name'] = data.name
             elif HTTP_PATH in sd.attributes:
                 data.properties['request.name'] = data.name + \
-                    ' ' + sd.attributes[HTTP_PATH]
+                        ' ' + sd.attributes[HTTP_PATH]
             if HTTP_URL in sd.attributes:
                 data.url = sd.attributes[HTTP_URL]
                 data.properties['request.url'] = sd.attributes[HTTP_URL]
@@ -143,18 +145,19 @@ class AzureExporter(BaseExporter, ProcessorMixin, TransportMixin):
                 data.success = True
         else:
             envelope.name = \
-                'Microsoft.ApplicationInsights.RemoteDependency'
+                    'Microsoft.ApplicationInsights.RemoteDependency'
             data = RemoteDependency(
-                name=sd.name,  # TODO
-                id='{}'.format(sd.span_id),
+                name=sd.name,
+                id=f'{sd.span_id}',
                 resultCode=str(sd.status.code),
                 duration=utils.timestamp_to_duration(
                     sd.start_time,
                     sd.end_time,
                 ),
-                success=False,  # Modify based off attributes or status
+                success=False,
                 properties={},
             )
+
             envelope.data = Data(
                 baseData=data,
                 baseType='RemoteDependencyData',
@@ -171,7 +174,7 @@ class AzureExporter(BaseExporter, ProcessorMixin, TransportMixin):
                     if HTTP_METHOD in sd.attributes:
                         # name is METHOD/path
                         data.name = sd.attributes[HTTP_METHOD] \
-                            + ' ' + parse_url.path
+                                + ' ' + parse_url.path
                 if HTTP_STATUS_CODE in sd.attributes:
                     status_code = sd.attributes[HTTP_STATUS_CODE]
                     data.resultCode = str(status_code)
@@ -182,10 +185,11 @@ class AzureExporter(BaseExporter, ProcessorMixin, TransportMixin):
                 data.type = 'INPROC'
                 data.success = True
         if sd.links:
-            links = []
-            for link in sd.links:
-                links.append(
-                    {"operation_Id": link.trace_id, "id": link.span_id})
+            links = [
+                {"operation_Id": link.trace_id, "id": link.span_id}
+                for link in sd.links
+            ]
+
             data.properties["_MS.links"] = json.dumps(links)
         # TODO: tracestate, tags
         for key in sd.attributes:

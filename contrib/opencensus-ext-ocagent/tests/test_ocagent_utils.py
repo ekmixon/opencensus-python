@@ -28,7 +28,7 @@ class TestUtils(unittest.TestCase):
 
         proto_ts = utils.proto_ts_from_datetime_str(
             common_utils.to_iso_str(now))
-        self.assertEqual(proto_ts.seconds, int(expected_seconds))
+        self.assertEqual(proto_ts.seconds, expected_seconds)
         self.assertEqual(proto_ts.nanos, expected_nanos)
 
     def test_datetime_str_to_proto_ts_conversion_none(self):
@@ -58,7 +58,7 @@ class TestUtils(unittest.TestCase):
         expected_nanos = delta.microseconds * 1000
 
         proto_ts = utils.proto_ts_from_datetime(now)
-        self.assertEqual(proto_ts.seconds, int(expected_seconds))
+        self.assertEqual(proto_ts.seconds, expected_seconds)
         self.assertEqual(proto_ts.nanos, expected_nanos)
 
     def test_datetime_to_proto_ts_conversion_zero(self):

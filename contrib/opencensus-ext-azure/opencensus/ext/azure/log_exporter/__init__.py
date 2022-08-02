@@ -116,9 +116,7 @@ class Worker(threading.Thread):
         self._src = src
         self._dst = dst
         self._stopping = False
-        super(Worker, self).__init__(
-            name='{} Worker'.format(type(dst).__name__)
-        )
+        super(Worker, self).__init__(name=f'{type(dst).__name__} Worker')
 
     def run(self):
         # Indicate that this thread is an exporter thread.
@@ -178,32 +176,32 @@ class AzureLogHandler(TransportMixin, ProcessorMixin, BaseLogHandler):
         }
         if (hasattr(record, 'custom_dimensions') and
                 isinstance(record.custom_dimensions, dict)):
-            properties.update(record.custom_dimensions)
+            properties |= record.custom_dimensions
 
         if record.exc_info:
             exctype, _value, tb = record.exc_info
             callstack = []
-            level = 0
             has_full_stack = False
-            exc_type = "N/A"
             message = self.format(record)
             if tb is not None:
                 has_full_stack = True
-                for fileName, line, method, _text in traceback.extract_tb(tb):
-                    callstack.append({
+                callstack.extend(
+                    {
                         'level': level,
                         'method': method,
                         'fileName': fileName,
                         'line': line,
-                    })
-                    level += 1
+                    }
+                    for level, (fileName, line, method, _text) in enumerate(
+                        traceback.extract_tb(tb)
+                    )
+                )
+
                 callstack.reverse()
             elif record.message:
                 message = record.message
 
-            if exctype is not None:
-                exc_type = exctype.__name__
-
+            exc_type = exctype.__name__ if exctype is not None else "N/A"
             envelope.name = 'Microsoft.ApplicationInsights.Exception'
 
             data = ExceptionData(
@@ -239,7 +237,7 @@ class AzureEventHandler(TransportMixin, ProcessorMixin, BaseLogHandler):
         properties = {}
         if (hasattr(record, 'custom_dimensions') and
                 isinstance(record.custom_dimensions, dict)):
-            properties.update(record.custom_dimensions)
+            properties |= record.custom_dimensions
 
         envelope.name = 'Microsoft.ApplicationInsights.Event'
         data = Event(
@@ -262,9 +260,9 @@ def create_envelope(instrumentation_key, record):
         'traceId',
         '00000000000000000000000000000000',
     )
-    envelope.tags['ai.operation.parentId'] = '|{}.{}.'.format(
-        envelope.tags['ai.operation.id'],
-        getattr(record, 'spanId', '0000000000000000'),
-    )
+    envelope.tags[
+        'ai.operation.parentId'
+    ] = f"|{envelope.tags['ai.operation.id']}.{getattr(record, 'spanId', '0000000000000000')}."
+
 
     return envelope

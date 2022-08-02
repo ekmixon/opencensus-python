@@ -46,7 +46,7 @@ HTTP_URL = attributes_helper.COMMON_ATTRIBUTES['HTTP_URL']
 
 def trace_integration(tracer=None):
     """Wrap the requests library to trace it."""
-    log.info('Integrated module: {}'.format(MODULE_NAME))
+    log.info(f'Integrated module: {MODULE_NAME}')
 
     if tracer is not None:
         # The execution_context tracer should never be None - if it has not
@@ -82,16 +82,16 @@ def wrap_session_request(wrapped, instance, args, kwargs):
     if parsed_url.port is None:
         dest_url = parsed_url.hostname
     else:
-        dest_url = '{}:{}'.format(parsed_url.hostname, parsed_url.port)
+        dest_url = f'{parsed_url.hostname}:{parsed_url.port}'
     if utils.disable_tracing_hostname(dest_url, excludelist_hostnames):
         return wrapped(*args, **kwargs)
 
-    path = parsed_url.path if parsed_url.path else '/'
+    path = parsed_url.path or '/'
 
     _tracer = execution_context.get_opencensus_tracer()
     _span = _tracer.start_span()
 
-    _span.name = '{}'.format(path)
+    _span.name = f'{path}'
     _span.span_kind = span_module.SpanKind.CLIENT
 
     try:

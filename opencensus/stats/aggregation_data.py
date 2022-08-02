@@ -38,11 +38,7 @@ class SumAggregationData(object):
         self._sum_data = sum_data
 
     def __repr__(self):
-        return ("{}({})"
-                .format(
-                    type(self).__name__,
-                    self.sum_data,
-                ))
+        return f"{type(self).__name__}({self.sum_data})"
 
     def add_sample(self, value, timestamp=None, attachments=None):
         """Allows the user to add a sample to the Sum Aggregation Data
@@ -85,11 +81,7 @@ class CountAggregationData(object):
         self._count_data = count_data
 
     def __repr__(self):
-        return ("{}({})"
-                .format(
-                    type(self).__name__,
-                    self.count_data,
-                ))
+        return f"{type(self).__name__}({self.count_data})"
 
     def add_sample(self, value, timestamp=None, attachments=None):
         """Adds a sample to the current Count Aggregation Data and adds 1 to
@@ -163,23 +155,19 @@ class DistributionAggregationData(object):
             if exemplars is None:
                 self._exemplars = {ii: None for ii in range(len(bounds) + 1)}
             else:
-                self._exemplars = {ii: ex for ii, ex in enumerate(exemplars)}
+                self._exemplars = dict(enumerate(exemplars))
         self._bounds = (bucket_boundaries.BucketBoundaries(boundaries=bounds)
                         .boundaries)
 
         if counts_per_bucket is None:
-            counts_per_bucket = [0 for ii in range(len(bounds) + 1)]
+            counts_per_bucket = [0 for _ in range(len(bounds) + 1)]
         else:
             assert all(cc >= 0 for cc in counts_per_bucket)
             assert len(counts_per_bucket) == len(bounds) + 1
         self._counts_per_bucket = counts_per_bucket
 
     def __repr__(self):
-        return ("{}({})"
-                .format(
-                    type(self).__name__,
-                    self.count_data,
-                ))
+        return f"{type(self).__name__}({self.count_data})"
 
     @property
     def mean_data(self):
@@ -250,10 +238,9 @@ class DistributionAggregationData(object):
             if value < bb:
                 self._counts_per_bucket[ii] += 1
                 return ii
-        else:
-            last_bucket_index = len(self._bounds)
-            self._counts_per_bucket[last_bucket_index] += 1
-            return last_bucket_index
+        last_bucket_index = len(self._bounds)
+        self._counts_per_bucket[last_bucket_index] += 1
+        return last_bucket_index
 
     def to_point(self, timestamp):
         """Get a Point conversion of this aggregation.
@@ -318,11 +305,7 @@ class LastValueAggregationData(object):
         self._value = value
 
     def __repr__(self):
-        return ("{}({})"
-                .format(
-                    type(self).__name__,
-                    self.value,
-                ))
+        return f"{type(self).__name__}({self.value})"
 
     def add_sample(self, value, timestamp=None, attachments=None):
         """Adds a sample to the current

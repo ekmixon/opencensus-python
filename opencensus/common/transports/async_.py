@@ -118,8 +118,6 @@ class _Worker(object):
                         'Dropping %s objects from queue.',
                         self.exporter.__class__.__name__,
                         len(data))
-                    pass
-
             for _ in range(len(items)):
                 self._queue.task_done()
 
@@ -167,10 +165,9 @@ class _Worker(object):
             self._queue.put_nowait(_WORKER_TERMINATOR)
             self._thread.join(timeout=self._grace_period)
 
-            success = not self.is_alive
             self._thread = None
 
-            return success
+            return not self.is_alive
 
     def _export_pending_data(self):
         """Callback that attempts to send pending data before termination."""

@@ -42,8 +42,7 @@ class B3FormatPropagator(object):
 
         trace_id, span_id, sampled = None, None, None
 
-        state = headers.get(_STATE_HEADER_KEY)
-        if state:
+        if state := headers.get(_STATE_HEADER_KEY):
             fields = state.split('-', 4)
 
             if len(fields) == 1:
@@ -61,17 +60,7 @@ class B3FormatPropagator(object):
             span_id = headers.get(_SPAN_ID_KEY)
             sampled = headers.get(_SAMPLED_KEY)
 
-        if sampled is not None:
-            # The specification encodes an enabled tracing decision as "1".
-            # In the wild pre-standard implementations might still send "true".
-            # "d" is set in the single header case when debugging is enabled.
-            sampled = sampled.lower() in ('1', 'd', 'true')
-        else:
-            # If there's no incoming sampling decision, it was deferred to us.
-            # Even though we set it to False here, we might still sample
-            # depending on the tracer configuration.
-            sampled = False
-
+        sampled = False if sampled is None else sampled.lower() in ('1', 'd', 'true')
         trace_options = TraceOptions()
         trace_options.set_enabled(sampled)
 
@@ -83,14 +72,12 @@ class B3FormatPropagator(object):
         if len(trace_id) == 16:
             trace_id = '0'*16 + trace_id
 
-        span_context = SpanContext(
+        return SpanContext(
             trace_id=trace_id,
             span_id=span_id,
             trace_options=trace_options,
-            from_header=True
+            from_header=True,
         )
-
-        return span_context
 
     def to_headers(self, span_context):
         """Convert a SpanContext object to B3 propagation headers.
@@ -103,11 +90,7 @@ class B3FormatPropagator(object):
         :returns: B3 propagation headers.
         """
 
-        if not span_context.span_id:
-            span_id = INVALID_SPAN_ID
-        else:
-            span_id = span_context.span_id
-
+        span_id = span_context.span_id or INVALID_SPAN_ID
         sampled = span_context.trace_options.enabled
 
         return {

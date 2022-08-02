@@ -173,8 +173,7 @@ class OpenCensusClientInterceptor(grpc.UnaryUnaryClientInterceptor,
         self, continuation, client_call_details, request
     ):
         if CLOUD_TRACE in client_call_details.method:
-            response = continuation(client_call_details, request)
-            return response
+            return continuation(client_call_details, request)
 
         new_details, new_request_iterator, current_span = self._intercept_call(
             client_call_details=client_call_details,
@@ -209,8 +208,7 @@ class OpenCensusClientInterceptor(grpc.UnaryUnaryClientInterceptor,
         self, continuation, client_call_details, request_iterator
     ):
         if CLOUD_TRACE in client_call_details.method:
-            response = continuation(client_call_details, request_iterator)
-            return response
+            return continuation(client_call_details, request_iterator)
 
         new_details, new_request_iterator, current_span = self._intercept_call(
             client_call_details=client_call_details,
@@ -224,4 +222,4 @@ class OpenCensusClientInterceptor(grpc.UnaryUnaryClientInterceptor,
 def _get_span_name(client_call_details):
     """Generates a span name based off of the gRPC client call details"""
     method_name = client_call_details.method[1:].replace('/', '.')
-    return '{}.{}'.format(SENT_PREFIX, method_name)
+    return f'{SENT_PREFIX}.{method_name}'

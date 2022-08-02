@@ -66,11 +66,7 @@ def view_data_to_metric(view_data, timestamp):
     md = view_data.view.get_metric_descriptor()
 
     # TODO: implement gauges
-    if is_gauge(md.type):
-        ts_start = None  # pragma: NO COVER
-    else:
-        ts_start = view_data.start_time
-
+    ts_start = None if is_gauge(md.type) else view_data.start_time
     ts_list = []
     for tag_vals, agg_data in view_data.tag_value_aggregation_data_map.items():
         label_values = get_label_values(tag_vals)

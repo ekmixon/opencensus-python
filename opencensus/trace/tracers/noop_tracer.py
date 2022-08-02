@@ -43,8 +43,7 @@ class NoopTracer(base.Tracer):
         :returns: The Span object.
         """
 
-        span = self.start_span(name=name)
-        return span
+        return self.start_span(name=name)
 
     def start_span(self, name='span'):
         """Start a span.
@@ -55,8 +54,7 @@ class NoopTracer(base.Tracer):
         :rtype: :class:`~opencensus.trace.trace_span.Span`
         :returns: The Span object.
         """
-        span = trace_span.BlankSpan(name, context_tracer=self)
-        return span
+        return trace_span.BlankSpan(name, context_tracer=self)
 
     def end_span(self):
         """End a span. Remove the span from the span stack, and update the

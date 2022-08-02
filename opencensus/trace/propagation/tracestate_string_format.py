@@ -17,7 +17,7 @@ import re
 from opencensus.trace.tracestate import _KEY_FORMAT, _VALUE_FORMAT, Tracestate
 
 _DELIMITER_FORMAT = '[ \t]*,[ \t]*'
-_MEMBER_FORMAT = '(%s)(=)(%s)' % (_KEY_FORMAT, _VALUE_FORMAT)
+_MEMBER_FORMAT = f'({_KEY_FORMAT})(=)({_VALUE_FORMAT})'
 
 _DELIMITER_FORMAT_RE = re.compile(_DELIMITER_FORMAT)
 _MEMBER_FORMAT_RE = re.compile(_MEMBER_FORMAT)
@@ -37,7 +37,4 @@ class TracestateStringFormatter(object):
         return tracestate
 
     def to_string(self, tracestate):
-        return ','.join(map(
-            lambda key: key + '=' + tracestate[key],
-            tracestate
-        ))
+        return ','.join(map(lambda key: f'{key}={tracestate[key]}', tracestate))

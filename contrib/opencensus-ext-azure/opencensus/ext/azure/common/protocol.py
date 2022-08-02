@@ -37,10 +37,7 @@ class BaseObject(dict):
         try:
             return self[name]
         except KeyError:
-            raise AttributeError("'{}' object has no attribute {}".format(
-                type(self).__name__,
-                name,
-            ))
+            raise AttributeError(f"'{type(self).__name__}' object has no attribute {name}")
 
     def __getitem__(self, key):
         if self._default is self:

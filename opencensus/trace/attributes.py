@@ -67,8 +67,4 @@ class Attributes(object):
             if value is not None:
                 attributes_json[key] = value
 
-        result = {
-            'attributeMap': attributes_json
-        }
-
-        return result
+        return {'attributeMap': attributes_json}

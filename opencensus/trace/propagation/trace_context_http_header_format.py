@@ -51,17 +51,16 @@ class TraceContextPropagator(object):
         if not match:
             return SpanContext()
 
-        version = match.group(1)
-        trace_id = match.group(2)
-        span_id = match.group(3)
-        trace_options = match.group(4)
+        version = match[1]
+        trace_id = match[2]
+        span_id = match[3]
+        trace_options = match[4]
 
         if trace_id == '0' * 32 or span_id == '0' * 16:
             return SpanContext()
 
-        if version == '00':
-            if match.group(5):
-                return SpanContext()
+        if version == '00' and match[5]:
+            return SpanContext()
         if version == 'ff':
             return SpanContext()
 
@@ -78,7 +77,7 @@ class TraceContextPropagator(object):
             tracestate = TracestateStringFormatter().from_string(header)
             if tracestate.is_valid():
                 span_context.tracestate = \
-                    TracestateStringFormatter().from_string(header)
+                        TracestateStringFormatter().from_string(header)
         except ValueError:
             pass
         return span_context
@@ -102,14 +101,10 @@ class TraceContextPropagator(object):
         trace_options = '01' if trace_options else '00'
 
         headers = {
-            _TRACEPARENT_HEADER_NAME: '00-{}-{}-{}'.format(
-                trace_id,
-                span_id,
-                trace_options
-            ),
+            _TRACEPARENT_HEADER_NAME: f'00-{trace_id}-{span_id}-{trace_options}'
         }
-        tracestate = span_context.tracestate
-        if tracestate:
+
+        if tracestate := span_context.tracestate:
             headers[_TRACESTATE_HEADER_NAME] = \
-                TracestateStringFormatter().to_string(tracestate)
+                    TracestateStringFormatter().to_string(tracestate)
         return headers

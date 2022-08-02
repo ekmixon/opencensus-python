@@ -43,10 +43,7 @@ class StatsExporter(object):
     def export_metrics(self, metrics):
         """ Exports given metrics to target metric service.
         """
-        metric_protos = []
-        for metric in metrics:
-            metric_protos.append(_get_metric_proto(metric))
-
+        metric_protos = [_get_metric_proto(metric) for metric in metrics]
         self._rpc_handler.send(
             metrics_service_pb2.ExportMetricsServiceRequest(
                 metrics=metric_protos))
@@ -59,15 +56,16 @@ def _get_metric_proto(metric):
 
 
 def _get_time_series_list_proto(series_list):
-    protos = []
-    for series in series_list:
-        protos.append(
-            metrics_pb2.TimeSeries(
-                start_timestamp=utils.proto_ts_from_datetime_str(
-                    series.start_timestamp),
-                label_values=_get_label_values_proto(series.label_values),
-                points=_get_points_proto(series.points)))
-    return protos
+    return [
+        metrics_pb2.TimeSeries(
+            start_timestamp=utils.proto_ts_from_datetime_str(
+                series.start_timestamp
+            ),
+            label_values=_get_label_values_proto(series.label_values),
+            points=_get_points_proto(series.points),
+        )
+        for series in series_list
+    ]
 
 
 def _get_points_proto(points):
@@ -92,10 +90,8 @@ def _get_points_proto(points):
                     if point.value.bucket_options else None,
                     buckets=_get_buckets_proto(point.value.buckets)))
 
-        # TODO: handle SUMMARY metrics, #567
         else:  # pragma: NO COVER
-            raise TypeError('Unsupported metric type: {}'.format(
-                type(point.value)))
+            raise TypeError(f'Unsupported metric type: {type(point.value)}')
         protos.append(proto)
     return protos
 
@@ -107,14 +103,15 @@ def _get_bucket_options_proto(bucket_options):
 
 
 def _get_buckets_proto(buckets):
-    protos = []
-    for bucket in buckets:
-        protos.append(
-            metrics_pb2.DistributionValue.Bucket(
-                count=bucket.count,
-                exemplar=_get_exemplar_proto(bucket.exemplar)
-                if bucket.exemplar else None))
-    return protos
+    return [
+        metrics_pb2.DistributionValue.Bucket(
+            count=bucket.count,
+            exemplar=_get_exemplar_proto(bucket.exemplar)
+            if bucket.exemplar
+            else None,
+        )
+        for bucket in buckets
+    ]
 
 
 def _get_exemplar_proto(exemplar):
@@ -125,12 +122,12 @@ def _get_exemplar_proto(exemplar):
 
 
 def _get_label_values_proto(label_values):
-    protos = []
-    for label_value in label_values:
-        protos.append(
-            metrics_pb2.LabelValue(has_value=label_value.value is not None,
-                                   value=label_value.value))
-    return protos
+    return [
+        metrics_pb2.LabelValue(
+            has_value=label_value.value is not None, value=label_value.value
+        )
+        for label_value in label_values
+    ]
 
 
 def _get_metric_descriptor_proto(descriptor):

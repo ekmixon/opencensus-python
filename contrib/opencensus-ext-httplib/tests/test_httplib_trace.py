@@ -166,7 +166,7 @@ class Test_httplib_trace(unittest.TestCase):
         mock_self.host = 'localhost'
         mock_self.port = '8080'
         method = 'GET'
-        url = 'http://{}:{}'.format(mock_self.host, mock_self.port)
+        url = f'http://{mock_self.host}:{mock_self.port}'
         body = None
         headers = {}
 
@@ -187,7 +187,7 @@ class Test_httplib_trace(unittest.TestCase):
         mock_self.host = 'localhost'
         mock_self.port = '8080'
         method = 'GET'
-        url = 'http://{}:{}'.format(mock_self.host, mock_self.port)
+        url = f'http://{mock_self.host}:{mock_self.port}'
         body = None
         headers = {}
 

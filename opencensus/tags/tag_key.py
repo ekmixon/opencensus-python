@@ -29,7 +29,6 @@ class TagKey(str):
         :param name: The name of the key
         :return: TagKey
         """
-        if not isinstance(name, cls):
-            if not is_valid_tag_name(name):
-                raise ValueError(_TAG_NAME_ERROR)
+        if not isinstance(name, cls) and not is_valid_tag_name(name):
+            raise ValueError(_TAG_NAME_ERROR)
         return super(TagKey, cls).__new__(cls, name)
